@@ -5,7 +5,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image/image.dart' as Library;
-import 'package:image_cropper/common/image_draw_details.dart';
+import 'package:image_cropper/model/image_draw_details.dart';
 import 'package:image_cropper/common/inverted_clipper.dart';
 import 'package:image_cropper/constant/color_constant.dart';
 import 'package:image_cropper/constant/enums.dart';
@@ -13,7 +13,7 @@ import 'package:image_picker/image_picker.dart';
 
 import 'common/app_button.dart';
 
-class ImageCropper {
+class ImageCropping {
   BuildContext _context;
   void Function(Uint8List) _onImagePickListener;
   void Function() _onImageStartLoading;
@@ -22,7 +22,7 @@ class ImageCropper {
   double _defaultCropSize = 100;
   double _minCropSize = 10;
 
-  ImageCropper(this._context, this._onImagePickListener,
+  ImageCropping(this._context, this._onImagePickListener,
       this._onImageStartLoading, this._onImageEndLoading,
       {double outputImageSize = -1})
       : _outputImageSize = outputImageSize;

@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:image_cropper/image_cropper.dart';
+import 'package:image_cropper/image_cropping.dart';
 
 void main() {
   /*test('adds one to input values', () {

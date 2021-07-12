@@ -65,6 +65,13 @@
             </list>
           </value>
         </entry>
+        <entry key="cupertino_icons">
+          <value>
+            <list>
+              <option value="$USER_HOME$/.pub-cache/hosted/pub.dartlang.org/cupertino_icons-1.0.3/lib" />
+            </list>
+          </value>
+        </entry>
         <entry key="fake_async">
           <value>
             <list>
@@ -93,10 +100,24 @@
             </list>
           </value>
         </entry>
+        <entry key="flutter_overlay_loader">
+          <value>
+            <list>
+              <option value="$USER_HOME$/.pub-cache/hosted/pub.dartlang.org/flutter_overlay_loader-0.1.1/lib" />
+            </list>
+          </value>
+        </entry>
         <entry key="flutter_plugin_android_lifecycle">
           <value>
             <list>
               <option value="$USER_HOME$/.pub-cache/hosted/pub.dartlang.org/flutter_plugin_android_lifecycle-2.0.2/lib" />
+            </list>
+          </value>
+        </entry>
+        <entry key="flutter_spinkit">
+          <value>
+            <list>
+              <option value="$USER_HOME$/.pub-cache/hosted/pub.dartlang.org/flutter_spinkit-5.0.0/lib" />
             </list>
           </value>
         </entry>
@@ -364,10 +385,13 @@
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dartlang.org/collection-1.15.0/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dartlang.org/cross_file-0.3.1+3/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dartlang.org/crypto-3.0.1/lib" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dartlang.org/cupertino_icons-1.0.3/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dartlang.org/fake_async-1.2.0/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dartlang.org/ffi-1.1.2/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dartlang.org/file-6.1.2/lib" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dartlang.org/flutter_overlay_loader-0.1.1/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dartlang.org/flutter_plugin_android_lifecycle-2.0.2/lib" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dartlang.org/flutter_spinkit-5.0.0/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dartlang.org/get-4.1.4/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dartlang.org/google_fonts-2.1.0/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dartlang.org/http-0.13.3/lib" />

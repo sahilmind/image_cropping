@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:image_cropper/constant/color_constant.dart';
-import 'package:image_cropper/constant/font_style.dart';
+import 'package:image_cropping/constant/color_constant.dart';
+import 'package:image_cropping/constant/font_style.dart';
 import 'package:get/get.dart';
 
 class CustomAlert {

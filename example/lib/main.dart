@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:example/app_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:image_cropping/image_cropping.dart';
 
@@ -44,9 +45,11 @@ class _MyAppState extends State<MyApp> {
             },
                 () {
               // Start Loading.
+                  AppLoader.show(context);
             },
                 () {
               // End Loading.
+                  AppLoader.hide();
             },
           ).cropImage();
         },

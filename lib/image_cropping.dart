@@ -5,13 +5,14 @@ import 'dart:ui' as ui;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image/image.dart' as Library;
-import 'package:image_cropping/model/image_draw_details.dart';
 import 'package:image_cropping/common/inverted_clipper.dart';
 import 'package:image_cropping/constant/color_constant.dart';
 import 'package:image_cropping/constant/enums.dart';
+import 'package:image_cropping/model/image_draw_details.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'common/app_button.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 class ImageCropping {
   BuildContext _context;
@@ -22,20 +23,17 @@ class ImageCropping {
   double _defaultCropSize = 100;
   double _minCropSize = 10;
 
+  var _currentRotationValue = 0;
+  var _currentRotationDegreeValue = 0;
+
   ImageCropping(this._context, this._onImagePickListener,
       this._onImageStartLoading, this._onImageEndLoading,
       {double outputImageSize = -1})
       : _outputImageSize = outputImageSize;
 
   Future<void> cropImage() async {
-    final double deviceWidth = MediaQuery
-        .of(_context)
-        .size
-        .width;
-    final double deviceHeight = MediaQuery
-        .of(_context)
-        .size
-        .height;
+    final double deviceWidth = MediaQuery.of(_context).size.width;
+    final double deviceHeight = MediaQuery.of(_context).size.height;
 
     late double surfaceX = -1,
         surfaceY = -1,
@@ -54,12 +52,11 @@ class ImageCropping {
     }
 
     double cropSize =
-    (_outputImageSize == -1) ? _defaultCropSize : _outputImageSize;
+        (_outputImageSize == -1) ? _defaultCropSize : _outputImageSize;
     double initCropSize =
-    (_outputImageSize == -1) ? _defaultCropSize : _outputImageSize;
+        (_outputImageSize == -1) ? _defaultCropSize : _outputImageSize;
 
-    var pickedFile =
-    await ImagePicker().getImage(source: ImageSource.gallery);
+    var pickedFile = await ImagePicker().getImage(source: ImageSource.gallery);
     final imgBytes = await pickedFile?.readAsBytes();
     if (imgBytes == null) {
       return;
@@ -67,412 +64,442 @@ class ImageCropping {
     showDialog(
         context: _context,
         builder: (BuildContext context4) {
-          return Material(
-                child: FutureBuilder<ui.Image>(
-                    future: _bytesToImage(imgBytes),
-                    builder: (context3, data) {
-                      if (data.hasData && data.data != null) {
-                        _onImageEndLoading();
-                        ui.Image image = data.data!;
+          return StatefulBuilder(builder: (rootContext, rootState) {
+            return Material(
+              child: FutureBuilder<ui.Image>(
+                  future: _bytesToImage(imgBytes),
+                  builder: (context3, data) {
+                    if (data.hasData && data.data != null) {
+                      _onImageEndLoading();
+                      ui.Image image = data.data!;
 
-                        imgWidth = image.width.toDouble();
-                        imgHeight = image.height.toDouble();
-                        if (imgWidth > imgHeight) {
-                          originalWidth = imgWidth;
-                          originalHeight = imgWidth;
-                        } else {
-                          originalWidth = imgHeight;
-                          originalHeight = imgHeight;
-                        }
-                        if (deviceWidth > deviceHeight) {
-                          width = deviceHeight;
-                          height = deviceHeight;
-                        } else {
-                          width = deviceWidth;
-                          height = deviceWidth;
-                        }
-
-                        if (imgWidth > imgHeight) {
-                          imgHeight = imgHeight * (width / imgWidth);
-                          cropSize = cropSize * (width / imgWidth);
-                          initCropSize = cropSize;
-                          imgWidth = width;
-                        } else {
-                          imgWidth = imgWidth * (width / imgHeight);
-                          cropSize = cropSize * (width / imgHeight);
-                          initCropSize = cropSize;
-                          imgHeight = width;
-                        }
-                        compute(
-                            drawImageInCenter,
-                            ImageDrawDetails(
-                                imgBytes,
-                                Library.Image(originalWidth.toInt(),
-                                    originalHeight.toInt()),
-                                originalWidth.toInt(),
-                                originalHeight.toInt()))
-                            .then((value) {
-                          imageFromLibrary = value;
-                        });
-                        final double maxCropSize = width > height
-                            ? height
-                            : width;
-                        double left = (width / 2) - (cropSize / 2),
-                            top = (height / 2) - (cropSize / 2);
-                        return StatefulBuilder(builder: (context4, setState2) {
-                          final imageWidget = Image.memory(
-                            imgBytes,
-                            alignment: Alignment.center,
-                            fit: BoxFit.fill,
-                            width: imgWidth,
-                            height: imgHeight,
-                          );
-                          return Stack(
-                            children: [
-                              Center(
-                                child: StatefulBuilder(
-                                    builder: (context, setCropState) {
-                                      void checkTopLeft() {
-                                        if (left < 0) {
-                                          left = 0;
-                                        }
-                                        if (left + cropSize > width) {
-                                          left = width - cropSize;
-                                        }
-                                        if (top + cropSize > height) {
-                                          top = height - cropSize;
-                                        }
-                                        if (top < 0) {
-                                          top = 0;
-                                        }
-                                      }
-
-                                      void touchUpdate(data) {
-                                        if (surfaceX != -1) {
-                                          left +=
-                                              data.globalPosition.dx - surfaceX;
-                                          top +=
-                                              data.globalPosition.dy - surfaceY;
-                                          checkTopLeft();
-                                          setCropState(() {});
-                                        }
-                                        surfaceX = data.globalPosition.dx;
-                                        surfaceY = data.globalPosition.dy;
-                                      }
-
-                                      void onButtonPress(data) {
-                                        cropButtonXPosition =
-                                            data.globalPosition.dx;
-                                        cropButtonYPosition =
-                                            data.globalPosition.dy;
-                                      }
-
-                                      void buttonDrag(data,
-                                          DragDirection direction) {
-                                        if (data == null) {
-                                          return;
-                                        }
-                                        if (cropButtonXPosition != -1 &&
-                                            cropButtonYPosition != -1) {
-                                          double tmp = 0;
-                                          if (direction ==
-                                              DragDirection.LEFT_TOP) {
-                                            tmp = (cropButtonXPosition -
-                                                data.globalPosition.dx);
-                                            left -= tmp;
-                                            top -= tmp;
-                                          } else if (direction ==
-                                              DragDirection.LEFT_BOTTOM) {
-                                            tmp = (cropButtonXPosition -
-                                                data.globalPosition.dx);
-                                            left -= tmp;
-                                          } else if (direction ==
-                                              DragDirection.RIGHT_TOP) {
-                                            tmp = (data.globalPosition.dx -
-                                                cropButtonXPosition);
-                                            top -= tmp;
-                                          } else if (direction ==
-                                              DragDirection.RIGHT_BOTTOM) {
-                                            tmp = (data.globalPosition.dx -
-                                                cropButtonXPosition);
-                                          }
-                                          cropSize += tmp;
-                                          if (_outputImageSize != -1 &&
-                                              cropSize < initCropSize) {
-                                            cropSize = initCropSize;
-                                          }
-                                          if (cropSize < _minCropSize) {
-                                            cropSize = _minCropSize;
-                                          }
-                                          if (cropSize > maxCropSize) {
-                                            cropSize = maxCropSize;
-                                          }
-                                          checkTopLeft();
-                                          setCropState(() {});
-                                        }
-                                        cropButtonXPosition =
-                                            data.globalPosition.dx;
-                                        cropButtonYPosition =
-                                            data.globalPosition.dy;
-                                      }
-
-                                      return Center(
-                                        child: Container(
-                                          width: width,
-                                          height: height,
-                                          color: Colors.white,
-                                          child: Stack(
-                                              alignment: Alignment.center,
-                                              children: [
-                                                Center(child: imageWidget),
-                                                Positioned(
-                                                    left: left,
-                                                    top: top,
-                                                    child: GestureDetector(
-                                                      child: Container(
-                                                        width: cropSize,
-                                                        height: cropSize,
-                                                        decoration: BoxDecoration(
-                                                            border: Border.all(
-                                                                color: Colors
-                                                                    .white,
-                                                                width: 2)),
-                                                      ),
-                                                      onTapDown: (data) {
-                                                        surfaceX =
-                                                            data.globalPosition
-                                                                .dx;
-                                                        surfaceY =
-                                                            data.globalPosition
-                                                                .dy;
-                                                      },
-                                                      onHorizontalDragUpdate:
-                                                      touchUpdate,
-                                                      onVerticalDragUpdate: touchUpdate,
-                                                      onVerticalDragStart: touchUpdate,
-                                                      onHorizontalDragStart:
-                                                      touchUpdate,
-                                                    )),
-                                                IgnorePointer(
-                                                  child: ClipPath(
-                                                    clipper: InvertedClipper(
-                                                        left, top, cropSize,
-                                                        context),
-                                                    child: Container(
-                                                      color: const Color
-                                                          .fromRGBO(
-                                                          0, 0, 0, 0.4),
-                                                    ),
-                                                  ),
-                                                ),
-                                                Positioned(
-                                                  // LEFT_TOP
-                                                    left: left - 10,
-                                                    top: top - 10,
-                                                    child: GestureDetector(
-                                                      child: CircleAvatar(
-                                                        child: Container(),
-                                                        radius: 10,
-                                                        backgroundColor:
-                                                        AppColors.theme,
-                                                      ),
-                                                      onTapDown: onButtonPress,
-                                                      onHorizontalDragUpdate: (
-                                                          data) {
-                                                        buttonDrag(data,
-                                                            DragDirection
-                                                                .LEFT_TOP);
-                                                      },
-                                                      onVerticalDragUpdate: (
-                                                          data) {
-                                                        buttonDrag(data,
-                                                            DragDirection
-                                                                .LEFT_TOP);
-                                                      },
-                                                      onVerticalDragStart: (
-                                                          data) {
-                                                        buttonDrag(data,
-                                                            DragDirection
-                                                                .LEFT_TOP);
-                                                      },
-                                                      onHorizontalDragStart: (
-                                                          data) {
-                                                        buttonDrag(data,
-                                                            DragDirection
-                                                                .LEFT_TOP);
-                                                      },
-                                                    )),
-                                                Positioned(
-                                                  // RIGHT_TOP
-                                                    left: left + cropSize - 10,
-                                                    top: top - 10,
-                                                    child: GestureDetector(
-                                                      child: CircleAvatar(
-                                                        child: Container(),
-                                                        radius: 10,
-                                                        backgroundColor:
-                                                        AppColors.theme,
-                                                      ),
-                                                      onTapDown: onButtonPress,
-                                                      onHorizontalDragUpdate: (
-                                                          data) {
-                                                        buttonDrag(data,
-                                                            DragDirection
-                                                                .RIGHT_TOP);
-                                                      },
-                                                      onVerticalDragUpdate: (
-                                                          data) {
-                                                        buttonDrag(data,
-                                                            DragDirection
-                                                                .RIGHT_TOP);
-                                                      },
-                                                      onVerticalDragStart: (
-                                                          data) {
-                                                        buttonDrag(data,
-                                                            DragDirection
-                                                                .RIGHT_TOP);
-                                                      },
-                                                      onHorizontalDragStart: (
-                                                          data) {
-                                                        buttonDrag(data,
-                                                            DragDirection
-                                                                .RIGHT_TOP);
-                                                      },
-                                                    )),
-                                                Positioned(
-                                                  // LEFT_BOTTOM
-                                                    left: left - 10,
-                                                    top: top + cropSize - 10,
-                                                    child: GestureDetector(
-                                                      child: CircleAvatar(
-                                                        child: Container(),
-                                                        radius: 10,
-                                                        backgroundColor:
-                                                        AppColors.theme,
-                                                      ),
-                                                      onTapDown: onButtonPress,
-                                                      onHorizontalDragUpdate: (
-                                                          data) {
-                                                        buttonDrag(data,
-                                                            DragDirection
-                                                                .LEFT_BOTTOM);
-                                                      },
-                                                      onVerticalDragUpdate: (
-                                                          data) {
-                                                        buttonDrag(data,
-                                                            DragDirection
-                                                                .LEFT_BOTTOM);
-                                                      },
-                                                      onVerticalDragStart: (
-                                                          data) =>
-                                                          buttonDrag(
-                                                              data,
-                                                              DragDirection
-                                                                  .LEFT_BOTTOM),
-                                                      onHorizontalDragStart: (
-                                                          data) =>
-                                                          buttonDrag(
-                                                              data,
-                                                              DragDirection
-                                                                  .LEFT_BOTTOM),
-                                                    )),
-                                                Positioned(
-                                                  // RIGHT_BOTTOM
-                                                    left: left + cropSize - 10,
-                                                    top: top + cropSize - 10,
-                                                    child: GestureDetector(
-                                                      child: CircleAvatar(
-                                                        child: Container(),
-                                                        radius: 10,
-                                                        backgroundColor:
-                                                        AppColors.theme,
-                                                      ),
-                                                      onTapDown: onButtonPress,
-                                                      onHorizontalDragUpdate: (
-                                                          data) =>
-                                                          buttonDrag(
-                                                              data,
-                                                              DragDirection
-                                                                  .RIGHT_BOTTOM),
-                                                      onVerticalDragUpdate: (
-                                                          data) =>
-                                                          buttonDrag(
-                                                              data,
-                                                              DragDirection
-                                                                  .RIGHT_BOTTOM),
-                                                      onVerticalDragStart: (
-                                                          data) =>
-                                                          buttonDrag(
-                                                              data,
-                                                              DragDirection
-                                                                  .RIGHT_BOTTOM),
-                                                      onHorizontalDragStart: (
-                                                          data) =>
-                                                          buttonDrag(
-                                                              data,
-                                                              DragDirection
-                                                                  .RIGHT_BOTTOM),
-                                                    )),
-                                              ]),
-                                        ),
-                                      );
-                                    }),
-                              ),
-                              Positioned(
-                                  right: 30,
-                                  top: 30,
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      appIconButton(
-                                          icon: Icons.done,
-                                          iconColor: Colors.green,
-                                          background: Colors.transparent,
-                                          onPress: () async {
-                                            _onPressDone(
-                                                imageFromLibrary,
-                                                cropSize,
-                                                top,
-                                                left,
-                                                originalWidth,
-                                                originalHeight,
-                                                width,
-                                                height);
-                                          },
-                                          size: 50),
-                                      appIconButton(
-                                          icon: Icons.close,
-                                          background: Colors.transparent,
-                                          iconColor: Colors.grey.shade800,
-                                          onPress: () async {
-                                            Navigator.pop(context4);
-                                          },
-                                          size: 50),
-                                    ],
-                                  ))
-                            ],
-                          );
-                        });
-                      } else if (data.hasError) {
-                        _onImageEndLoading();
-                        print("Error: ${data.error}");
-                        // Navigator.pop(context);
-                        // CustomAlert.showAlert('Something went Wrong',
-                        //     handler: (msg) {});
+                      imgWidth = image.width.toDouble();
+                      imgHeight = image.height.toDouble();
+                      if (imgWidth > imgHeight) {
+                        originalWidth = imgWidth;
+                        originalHeight = imgWidth;
                       } else {
-                        _onImageStartLoading();
-                        return CircularProgressIndicator(
-                          backgroundColor: AppColors.theme,
-                          strokeWidth: 3,
-                        );
+                        originalWidth = imgHeight;
+                        originalHeight = imgHeight;
                       }
-                      return Container();
-                    }),
-              );
+                      if (deviceWidth > deviceHeight) {
+                        width = deviceHeight;
+                        height = deviceHeight;
+                      } else {
+                        width = deviceWidth;
+                        height = deviceWidth;
+                      }
+
+                      if (imgWidth > imgHeight) {
+                        imgHeight = imgHeight * (width / imgWidth);
+                        cropSize = cropSize * (width / imgWidth);
+                        initCropSize = cropSize;
+                        imgWidth = width;
+                      } else {
+                        imgWidth = imgWidth * (width / imgHeight);
+                        cropSize = cropSize * (width / imgHeight);
+                        initCropSize = cropSize;
+                        imgHeight = width;
+                      }
+                      compute(
+                              drawImageInCenter,
+                              ImageDrawDetails(
+                                  imgBytes,
+                                  Library.Image(originalWidth.toInt(),
+                                      originalHeight.toInt()),
+                                  originalWidth.toInt(),
+                                  originalHeight.toInt()))
+                          .then((value) {
+                        imageFromLibrary = value;
+                      });
+                      final double maxCropSize =
+                          width > height ? height : width;
+                      double left = (width / 2) - (cropSize / 2),
+                          top = (height / 2) - (cropSize / 2);
+                      return StatefulBuilder(builder: (context4, setState2) {
+                        final imageWidget = Image.memory(
+                          imgBytes,
+                          alignment: Alignment.center,
+                          fit: BoxFit.fill,
+                          width: imgWidth,
+                          height: imgHeight,
+                        );
+                        return Stack(
+                          children: [
+                            Center(
+                              child: StatefulBuilder(
+                                builder: (context, setCropState) {
+                                  void checkTopLeft() {
+                                    if (left < 0) {
+                                      left = 0;
+                                    }
+                                    if (left + cropSize > width) {
+                                      left = width - cropSize;
+                                    }
+                                    if (top + cropSize > height) {
+                                      top = height - cropSize;
+                                    }
+                                    if (top < 0) {
+                                      top = 0;
+                                    }
+                                  }
+
+                                  void touchUpdate(data) {
+                                    if (surfaceX != -1) {
+                                      left += data.globalPosition.dx - surfaceX;
+                                      top += data.globalPosition.dy - surfaceY;
+                                      checkTopLeft();
+                                      setCropState(() {});
+                                    }
+                                    surfaceX = data.globalPosition.dx;
+                                    surfaceY = data.globalPosition.dy;
+                                  }
+
+                                  void onButtonPress(data) {
+                                    cropButtonXPosition =
+                                        data.globalPosition.dx;
+                                    cropButtonYPosition =
+                                        data.globalPosition.dy;
+                                  }
+
+                                  void buttonDrag(
+                                      data, DragDirection direction) {
+                                    if (data == null) {
+                                      return;
+                                    }
+                                    if (cropButtonXPosition != -1 &&
+                                        cropButtonYPosition != -1) {
+                                      double tmp = 0;
+                                      if (direction == DragDirection.LEFT_TOP) {
+                                        tmp = (cropButtonXPosition -
+                                            data.globalPosition.dx);
+                                        left -= tmp;
+                                        top -= tmp;
+                                      } else if (direction ==
+                                          DragDirection.LEFT_BOTTOM) {
+                                        tmp = (cropButtonXPosition -
+                                            data.globalPosition.dx);
+                                        left -= tmp;
+                                      } else if (direction ==
+                                          DragDirection.RIGHT_TOP) {
+                                        tmp = (data.globalPosition.dx -
+                                            cropButtonXPosition);
+                                        top -= tmp;
+                                      } else if (direction ==
+                                          DragDirection.RIGHT_BOTTOM) {
+                                        tmp = (data.globalPosition.dx -
+                                            cropButtonXPosition);
+                                      }
+                                      cropSize += tmp;
+                                      if (_outputImageSize != -1 &&
+                                          cropSize < initCropSize) {
+                                        cropSize = initCropSize;
+                                      }
+                                      if (cropSize < _minCropSize) {
+                                        cropSize = _minCropSize;
+                                      }
+                                      if (cropSize > maxCropSize) {
+                                        cropSize = maxCropSize;
+                                      }
+                                      checkTopLeft();
+                                      setCropState(() {});
+                                    }
+                                    cropButtonXPosition =
+                                        data.globalPosition.dx;
+                                    cropButtonYPosition =
+                                        data.globalPosition.dy;
+                                  }
+
+                                  return Center(
+                                    child: Container(
+                                      width: width,
+                                      height: height,
+                                      color: Colors.white,
+                                      child: Stack(
+                                        alignment: Alignment.center,
+                                        children: [
+                                          RotatedBox(
+                                              quarterTurns:
+                                                  _currentRotationValue,
+                                              child:
+                                                  Center(child: imageWidget)),
+                                          Positioned(
+                                              left: left,
+                                              top: top,
+                                              child: GestureDetector(
+                                                child: Container(
+                                                  width: cropSize,
+                                                  height: cropSize,
+                                                  decoration: BoxDecoration(
+                                                      border: Border.all(
+                                                          color: Colors.white,
+                                                          width: 2)),
+                                                ),
+                                                onTapDown: (data) {
+                                                  surfaceX = -1;
+                                                      // data.globalPosition.dx;
+                                                  surfaceY = -1;
+                                                      // data.globalPosition.dy;
+                                                },
+                                                onHorizontalDragUpdate:
+                                                    touchUpdate,
+                                                onVerticalDragUpdate:
+                                                    touchUpdate,
+                                                onVerticalDragStart:
+                                                    touchUpdate,
+                                                onHorizontalDragStart:
+                                                    touchUpdate,
+                                              )),
+                                          IgnorePointer(
+                                            child: ClipPath(
+                                              clipper: InvertedClipper(
+                                                  left, top, cropSize, context),
+                                              child: Container(
+                                                color: const Color.fromRGBO(
+                                                    0, 0, 0, 0.4),
+                                              ),
+                                            ),
+                                          ),
+                                          Positioned(
+                                              // LEFT_TOP
+                                              left: left - 10,
+                                              top: top - 10,
+                                              child: GestureDetector(
+                                                child: CircleAvatar(
+                                                  child: Container(),
+                                                  radius: 10,
+                                                  backgroundColor:
+                                                      AppColors.theme,
+                                                ),
+                                                onTapDown: onButtonPress,
+                                                onHorizontalDragUpdate: (data) {
+                                                  buttonDrag(data,
+                                                      DragDirection.LEFT_TOP);
+                                                },
+                                                onVerticalDragUpdate: (data) {
+                                                  buttonDrag(data,
+                                                      DragDirection.LEFT_TOP);
+                                                },
+                                                onVerticalDragStart: (data) {
+                                                  buttonDrag(data,
+                                                      DragDirection.LEFT_TOP);
+                                                },
+                                                onHorizontalDragStart: (data) {
+                                                  buttonDrag(data,
+                                                      DragDirection.LEFT_TOP);
+                                                },
+                                              )),
+                                          Positioned(
+                                              // RIGHT_TOP
+                                              left: left + cropSize - 10,
+                                              top: top - 10,
+                                              child: GestureDetector(
+                                                child: CircleAvatar(
+                                                  child: Container(),
+                                                  radius: 10,
+                                                  backgroundColor:
+                                                      AppColors.theme,
+                                                ),
+                                                onTapDown: onButtonPress,
+                                                onHorizontalDragUpdate: (data) {
+                                                  buttonDrag(data,
+                                                      DragDirection.RIGHT_TOP);
+                                                },
+                                                onVerticalDragUpdate: (data) {
+                                                  buttonDrag(data,
+                                                      DragDirection.RIGHT_TOP);
+                                                },
+                                                onVerticalDragStart: (data) {
+                                                  buttonDrag(data,
+                                                      DragDirection.RIGHT_TOP);
+                                                },
+                                                onHorizontalDragStart: (data) {
+                                                  buttonDrag(data,
+                                                      DragDirection.RIGHT_TOP);
+                                                },
+                                              )),
+                                          Positioned(
+                                              // LEFT_BOTTOM
+                                              left: left - 10,
+                                              top: top + cropSize - 10,
+                                              child: GestureDetector(
+                                                child: CircleAvatar(
+                                                  child: Container(),
+                                                  radius: 10,
+                                                  backgroundColor:
+                                                      AppColors.theme,
+                                                ),
+                                                onTapDown: onButtonPress,
+                                                onHorizontalDragUpdate: (data) {
+                                                  buttonDrag(
+                                                      data,
+                                                      DragDirection
+                                                          .LEFT_BOTTOM);
+                                                },
+                                                onVerticalDragUpdate: (data) {
+                                                  buttonDrag(
+                                                      data,
+                                                      DragDirection
+                                                          .LEFT_BOTTOM);
+                                                },
+                                                onVerticalDragStart: (data) =>
+                                                    buttonDrag(
+                                                        data,
+                                                        DragDirection
+                                                            .LEFT_BOTTOM),
+                                                onHorizontalDragStart: (data) =>
+                                                    buttonDrag(
+                                                        data,
+                                                        DragDirection
+                                                            .LEFT_BOTTOM),
+                                              )),
+                                          Positioned(
+                                            // RIGHT_BOTTOM
+                                            left: left + cropSize - 10,
+                                            top: top + cropSize - 10,
+                                            child: GestureDetector(
+                                              child: CircleAvatar(
+                                                child: Container(),
+                                                radius: 10,
+                                                backgroundColor:
+                                                    AppColors.theme,
+                                              ),
+                                              onTapDown: onButtonPress,
+                                              onHorizontalDragUpdate: (data) =>
+                                                  buttonDrag(
+                                                      data,
+                                                      DragDirection
+                                                          .RIGHT_BOTTOM),
+                                              onVerticalDragUpdate: (data) =>
+                                                  buttonDrag(
+                                                      data,
+                                                      DragDirection
+                                                          .RIGHT_BOTTOM),
+                                              onVerticalDragStart: (data) =>
+                                                  buttonDrag(
+                                                      data,
+                                                      DragDirection
+                                                          .RIGHT_BOTTOM),
+                                              onHorizontalDragStart: (data) =>
+                                                  buttonDrag(
+                                                      data,
+                                                      DragDirection
+                                                          .RIGHT_BOTTOM),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
+                            Positioned(
+                              right: 30,
+                              top: 30,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  appIconButton(
+                                      icon: Icons.done,
+                                      iconColor: Colors.green,
+                                      background: Colors.transparent,
+                                      onPress: () async {
+                                        _onPressDone(
+                                            imageFromLibrary,
+                                            cropSize,
+                                            top,
+                                            left,
+                                            originalWidth,
+                                            originalHeight,
+                                            width,
+                                            height);
+                                      },
+                                      size: (kIsWeb) ? 50 : 30),
+                                  appIconButton(
+                                      icon: Icons.close,
+                                      background: Colors.transparent,
+                                      iconColor: Colors.grey.shade800,
+                                      onPress: () async {
+                                        Navigator.pop(context4);
+                                      },
+                                      size: (kIsWeb) ? 50 : 30),
+                                  appIconButton(
+                                      icon: Icons.rotate_left,
+                                      background: Colors.transparent,
+                                      iconColor: Colors.grey.shade800,
+                                      onPress: () async {
+                                        _currentRotationValue -= 1;
+                                        if (_currentRotationValue > 3 ||
+                                            _currentRotationValue < -3) {
+                                          _currentRotationValue = 0;
+                                        }
+                                        if (_currentRotationDegreeValue != 0) {
+                                          _currentRotationDegreeValue -= 90;
+                                        } else {
+                                          _currentRotationDegreeValue = 270;
+                                        }
+                                        setState2(() {});
+                                      },
+                                      size: (kIsWeb) ? 50 : 30),
+                                  appIconButton(
+                                      icon: Icons.rotate_right,
+                                      background: Colors.transparent,
+                                      iconColor: Colors.grey.shade800,
+                                      onPress: () async {
+                                        _currentRotationValue += 1;
+                                        if (_currentRotationValue > 3 ||
+                                            _currentRotationValue < -3) {
+                                          _currentRotationValue = 0;
+                                        }
+                                        if (_currentRotationDegreeValue != 0) {
+                                          _currentRotationDegreeValue += 90;
+                                        } else {
+                                          _currentRotationDegreeValue = 90;
+                                        }
+                                        setState2(() {});
+                                      },
+                                      size: (kIsWeb) ? 50 : 30),
+                                  /*Slider(
+                                    value: _currentRotationSliderValue,
+                                    min: 0,
+                                    max: 360,
+                                    divisions: 36,
+                                    label:
+                                        _currentRotationSliderValue.toString(),
+                                    onChanged: (double value) {
+                                      _currentRotationSliderValue = value;
+                                      setState2(() {});
+                                    },
+                                  ),*/
+                                ],
+                              ),
+                            ),
+                          ],
+                        );
+                      });
+                    } else if (data.hasError) {
+                      _onImageEndLoading();
+                      print("Error: ${data.error}");
+                      // Navigator.pop(context);
+                      // CustomAlert.showAlert('Something went Wrong',
+                      //     handler: (msg) {});
+                    } else {
+                      _onImageStartLoading();
+                      return CircularProgressIndicator(
+                        backgroundColor: AppColors.theme,
+                        strokeWidth: 3,
+                      );
+                    }
+                    return Container();
+                  }),
+            );
+          });
         });
   }
 
-  void _onPressDone(Library.Image? imageFromLibrary,
+  void _onPressDone(
+      Library.Image? imageFromLibrary,
       double cropSize,
       double top,
       double left,
@@ -484,11 +511,12 @@ class ImageCropping {
       print('IMAGE LIB DOES NOT ENCODED');
       return;
     }
-    double wconst = (originalWidth / width),
-        hconst = (originalHeight / height);
+    double wconst = (originalWidth / width), hconst = (originalHeight / height);
     final top2 = top * hconst;
     final left2 = left * wconst;
     cropSize = cropSize * wconst;
+    imageFromLibrary =
+        Library.copyRotate(imageFromLibrary, _currentRotationDegreeValue);
     imageFromLibrary = Library.copyCrop(imageFromLibrary, left2.toInt(),
         top2.toInt(), cropSize.toInt(), cropSize.toInt());
     if (_outputImageSize != -1 && cropSize != _outputImageSize) {
@@ -497,7 +525,7 @@ class ImageCropping {
           interpolation: Library.Interpolation.average);
     }
     Uint8List byteInJpg =
-    Uint8List.fromList(Library.encodeJpg(imageFromLibrary, quality: 100));
+        Uint8List.fromList(Library.encodeJpg(imageFromLibrary, quality: 100));
     _onImagePickListener(byteInJpg);
     Navigator.pop(_context);
   }
@@ -507,12 +535,10 @@ class ImageCropping {
     ui.FrameInfo frame = await codec.getNextFrame();
     return frame.image;
   }
-
 }
 
 Library.Image drawImageInCenter(ImageDrawDetails details) {
-  Library.Image src,
-      dest = details.dest;
+  Library.Image src, dest = details.dest;
   src = Library.decodeImage(details.bytes)!;
   int xStart = ((details.width / 2) - (src.width / 2)).toInt();
   int xEnd = xStart + src.width;

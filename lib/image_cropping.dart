@@ -179,272 +179,7 @@ class ImageCropping {
                                 ),
                               ),
                             ),
-                            Center(
-                              child: StatefulBuilder(
-                                builder: (context, setCropState) {
-                                  void checkTopLeft() {
-                                    if (left < 0) {
-                                      left = 0;
-                                    }
-                                    if (left + cropSize > width) {
-                                      left = width - cropSize;
-                                    }
-                                    if (top + cropSize > height) {
-                                      top = height - cropSize;
-                                    }
-                                    if (top < 0) {
-                                      top = 0;
-                                    }
-                                  }
-
-                                  void touchUpdate(data) {
-                                    if (surfaceX != -1) {
-                                      left += data.globalPosition.dx - surfaceX;
-                                      top += data.globalPosition.dy - surfaceY;
-                                      checkTopLeft();
-                                      setCropState(() {});
-                                    }
-                                    surfaceX = data.globalPosition.dx;
-                                    surfaceY = data.globalPosition.dy;
-                                  }
-
-                                  void onButtonPress(data) {
-                                    cropButtonXPosition =
-                                        data.globalPosition.dx;
-                                    cropButtonYPosition =
-                                        data.globalPosition.dy;
-                                  }
-
-                                  void buttonDrag(
-                                      data, DragDirection direction) {
-                                    if (data == null) {
-                                      return;
-                                    }
-                                    if (cropButtonXPosition != -1 &&
-                                        cropButtonYPosition != -1) {
-                                      double tmp = 0;
-                                      if (direction == DragDirection.LEFT_TOP) {
-                                        tmp = (cropButtonXPosition -
-                                            data.globalPosition.dx) * ((kIsWeb) ? 1 : 0.5);
-                                        left -= tmp;
-                                        top -= tmp;
-                                      } else if (direction ==
-                                          DragDirection.LEFT_BOTTOM) {
-                                        tmp = (cropButtonXPosition -
-                                            data.globalPosition.dx) * ((kIsWeb) ? 1 : 0.5);
-                                        left -= tmp;
-                                      } else if (direction ==
-                                          DragDirection.RIGHT_TOP) {
-                                        tmp = (data.globalPosition.dx -
-                                            cropButtonXPosition) * ((kIsWeb) ? 1 : 0.5);
-                                        top -= tmp;
-                                      } else if (direction ==
-                                          DragDirection.RIGHT_BOTTOM) {
-                                        tmp = (data.globalPosition.dx -
-                                            cropButtonXPosition) * ((kIsWeb) ? 1 : 0.5);
-                                      }
-                                      cropSize += tmp;
-                                      if (_outputImageSize != -1 &&
-                                          cropSize < initCropSize) {
-                                        cropSize = initCropSize;
-                                      }
-                                      if (cropSize < _minCropSize) {
-                                        cropSize = _minCropSize;
-                                      }
-                                      if (cropSize > maxCropSize) {
-                                        cropSize = maxCropSize;
-                                      }
-                                      checkTopLeft();
-                                      setCropState(() {});
-                                    }
-                                    cropButtonXPosition =
-                                        data.globalPosition.dx;
-                                    cropButtonYPosition =
-                                        data.globalPosition.dy;
-                                  }
-
-                                  return Center(
-                                    child: Container(
-                                      width: width,
-                                      height: height,
-                                      color: Colors.white,
-                                      child: Stack(
-                                        alignment: Alignment.center,
-                                        children: [
-                                          RotatedBox(
-                                              quarterTurns:
-                                                  _currentRotationValue,
-                                              child:
-                                                  Center(child: imageWidget)),
-                                          Positioned(
-                                              left: left,
-                                              top: top,
-                                              child: GestureDetector(
-                                                child: Container(
-                                                  width: cropSize * _currentRatioWidthValue,
-                                                  height: cropSize * _currentRatioHeightValue,
-                                                  decoration: BoxDecoration(
-                                                      border: Border.all(
-                                                          color: Colors.white,
-                                                          width: 2)),
-                                                ),
-                                                onTapDown: (data) {
-                                                  surfaceX = -1;
-                                                  // data.globalPosition.dx;
-                                                  surfaceY = -1;
-                                                  // data.globalPosition.dy;
-                                                },
-                                                onHorizontalDragUpdate:
-                                                    touchUpdate,
-                                                onVerticalDragUpdate:
-                                                    touchUpdate,
-                                                onVerticalDragStart:
-                                                    touchUpdate,
-                                                onHorizontalDragStart:
-                                                    touchUpdate,
-                                              )),
-                                          IgnorePointer(
-                                            child: ClipPath(
-                                              clipper: InvertedClipper(
-                                                  left, top, cropSize * _currentRatioWidthValue, cropSize * _currentRatioHeightValue, context),
-                                              child: Container(
-                                                color: const Color.fromRGBO(
-                                                    0, 0, 0, 0.4),
-                                              ),
-                                            ),
-                                          ),
-                                          Positioned(
-                                              // LEFT_TOP
-                                              left: left - 10,
-                                              top: top - 10,
-                                              child: GestureDetector(
-                                                child: CircleAvatar(
-                                                  child: Container(),
-                                                  radius: 10,
-                                                  backgroundColor:
-                                                      AppColors.theme,
-                                                ),
-                                                onTapDown: onButtonPress,
-                                                onHorizontalDragUpdate: (data) {
-                                                  buttonDrag(data,
-                                                      DragDirection.LEFT_TOP);
-                                                },
-                                                onVerticalDragUpdate: (data) {
-                                                  buttonDrag(data,
-                                                      DragDirection.LEFT_TOP);
-                                                },
-                                                onVerticalDragStart: (data) {
-                                                  buttonDrag(data,
-                                                      DragDirection.LEFT_TOP);
-                                                },
-                                                onHorizontalDragStart: (data) {
-                                                  buttonDrag(data,
-                                                      DragDirection.LEFT_TOP);
-                                                },
-                                              )),
-                                          Positioned(
-                                            // RIGHT_TOP
-                                            left: left + cropSize * _currentRatioWidthValue - 10,
-                                            top: top - 10,
-                                            child: GestureDetector(
-                                              child: CircleAvatar(
-                                                child: Container(),
-                                                radius: 10,
-                                                backgroundColor:
-                                                    AppColors.theme,
-                                              ),
-                                              onTapDown: onButtonPress,
-                                              onHorizontalDragUpdate: (data) {
-                                                buttonDrag(data,
-                                                    DragDirection.RIGHT_TOP);
-                                              },
-                                              onVerticalDragUpdate: (data) {
-                                                buttonDrag(data,
-                                                    DragDirection.RIGHT_TOP);
-                                              },
-                                              onVerticalDragStart: (data) {
-                                                buttonDrag(data,
-                                                    DragDirection.RIGHT_TOP);
-                                              },
-                                              onHorizontalDragStart: (data) {
-                                                buttonDrag(data,
-                                                    DragDirection.RIGHT_TOP);
-                                              },
-                                            ),
-                                          ),
-                                          Positioned(
-                                            // LEFT_BOTTOM
-                                            left: left - 10,
-                                            top: top + cropSize * _currentRatioHeightValue - 10,
-                                            child: GestureDetector(
-                                              child: CircleAvatar(
-                                                child: Container(),
-                                                radius: 10,
-                                                backgroundColor:
-                                                    AppColors.theme,
-                                              ),
-                                              onTapDown: onButtonPress,
-                                              onHorizontalDragUpdate: (data) {
-                                                buttonDrag(data,
-                                                    DragDirection.LEFT_BOTTOM);
-                                              },
-                                              onVerticalDragUpdate: (data) {
-                                                buttonDrag(data,
-                                                    DragDirection.LEFT_BOTTOM);
-                                              },
-                                              onVerticalDragStart: (data) =>
-                                                  buttonDrag(
-                                                      data,
-                                                      DragDirection
-                                                          .LEFT_BOTTOM),
-                                              onHorizontalDragStart: (data) =>
-                                                  buttonDrag(
-                                                      data,
-                                                      DragDirection
-                                                          .LEFT_BOTTOM),
-                                            ),
-                                          ),
-                                          Positioned(
-                                            // RIGHT_BOTTOM
-                                            left: left + cropSize * _currentRatioWidthValue - 10,
-                                            top: top + cropSize * _currentRatioHeightValue - 10,
-                                            child: GestureDetector(
-                                              child: CircleAvatar(
-                                                child: Container(),
-                                                radius: 10,
-                                                backgroundColor:
-                                                    AppColors.theme,
-                                              ),
-                                              onTapDown: onButtonPress,
-                                              onHorizontalDragUpdate: (data) =>
-                                                  buttonDrag(
-                                                      data,
-                                                      DragDirection
-                                                          .RIGHT_BOTTOM),
-                                              onVerticalDragUpdate: (data) =>
-                                                  buttonDrag(
-                                                      data,
-                                                      DragDirection
-                                                          .RIGHT_BOTTOM),
-                                              onVerticalDragStart: (data) =>
-                                                  buttonDrag(
-                                                      data,
-                                                      DragDirection
-                                                          .RIGHT_BOTTOM),
-                                              onHorizontalDragStart: (data) =>
-                                                  buttonDrag(
-                                                      data,
-                                                      DragDirection
-                                                          .RIGHT_BOTTOM),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  );
-                                },
-                              ),
-                            ),
+                            _buildCenterBodyForImagePreviwe(left, top, width, height, surfaceX, surfaceY, cropButtonXPosition, cropButtonYPosition, maxCropSize, imageWidget),
                             Positioned(
                               right: 30,
                               top: 30,
@@ -538,6 +273,289 @@ class ImageCropping {
         });
   }
 
+  Widget _buildCenterBodyForImagePreviwe(
+      double left,
+      double top,
+      double width,
+      double height,
+      double surfaceX,
+      double surfaceY,
+      double cropButtonXPosition,
+      double cropButtonYPosition,
+      double maxCropSize,
+      Widget imageWidget,
+      ){
+    return Center(
+      child: StatefulBuilder(
+        builder: (context, setCropState) {
+          void checkTopLeft() {
+            if (left < 0) {
+              left = 0;
+            }
+            if (left + cropSize > width) {
+              left = width - cropSize;
+            }
+            if (top + cropSize > height) {
+              top = height - cropSize;
+            }
+            if (top < 0) {
+              top = 0;
+            }
+          }
+
+          void touchUpdate(data) {
+            if (surfaceX != -1) {
+              left += data.globalPosition.dx - surfaceX;
+              top += data.globalPosition.dy - surfaceY;
+              checkTopLeft();
+              setCropState(() {});
+            }
+            surfaceX = data.globalPosition.dx;
+            surfaceY = data.globalPosition.dy;
+          }
+
+          void onButtonPress(data) {
+            cropButtonXPosition =
+                data.globalPosition.dx;
+            cropButtonYPosition =
+                data.globalPosition.dy;
+          }
+
+          void buttonDrag(
+              data, DragDirection direction) {
+            if (data == null) {
+              return;
+            }
+            if (cropButtonXPosition != -1 &&
+                cropButtonYPosition != -1) {
+              double tmp = 0;
+              if (direction == DragDirection.LEFT_TOP) {
+                tmp = (cropButtonXPosition -
+                    data.globalPosition.dx) * ((kIsWeb) ? 1 : 0.5);
+                left -= tmp;
+                top -= tmp;
+              } else if (direction ==
+                  DragDirection.LEFT_BOTTOM) {
+                tmp = (cropButtonXPosition -
+                    data.globalPosition.dx) * ((kIsWeb) ? 1 : 0.5);
+                left -= tmp;
+              } else if (direction ==
+                  DragDirection.RIGHT_TOP) {
+                tmp = (data.globalPosition.dx -
+                    cropButtonXPosition) * ((kIsWeb) ? 1 : 0.5);
+                top -= tmp;
+              } else if (direction ==
+                  DragDirection.RIGHT_BOTTOM) {
+                tmp = (data.globalPosition.dx -
+                    cropButtonXPosition) * ((kIsWeb) ? 1 : 0.5);
+              }
+              cropSize += tmp;
+              if (_outputImageSize != -1 &&
+                  cropSize < initCropSize) {
+                cropSize = initCropSize;
+              }
+              if (cropSize < _minCropSize) {
+                cropSize = _minCropSize;
+              }
+              if (cropSize > maxCropSize) {
+                cropSize = maxCropSize;
+              }
+              checkTopLeft();
+              setCropState(() {});
+            }
+            cropButtonXPosition =
+                data.globalPosition.dx;
+            cropButtonYPosition =
+                data.globalPosition.dy;
+          }
+
+          return Center(
+            child: Container(
+              width: width,
+              height: height,
+              color: Colors.white,
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  RotatedBox(
+                    quarterTurns:
+                    _currentRotationValue,
+                    child: Center(child: imageWidget),
+                  ),
+                  Positioned(
+                      left: left,
+                      top: top,
+                      child: GestureDetector(
+                        child: Container(
+                          width: cropSize * _currentRatioWidthValue,
+                          height: cropSize * _currentRatioHeightValue,
+                          decoration: BoxDecoration(
+                              border: Border.all(
+                                  color: Colors.white,
+                                  width: 2)),
+                        ),
+                        onTapDown: (data) {
+                          surfaceX = -1;
+                          // data.globalPosition.dx;
+                          surfaceY = -1;
+                          // data.globalPosition.dy;
+                        },
+                        onHorizontalDragUpdate:
+                        touchUpdate,
+                        onVerticalDragUpdate:
+                        touchUpdate,
+                        onVerticalDragStart:
+                        touchUpdate,
+                        onHorizontalDragStart:
+                        touchUpdate,
+                      ),
+                  ),
+                  IgnorePointer(
+                    child: ClipPath(
+                      clipper: InvertedClipper(
+                          left, top, cropSize * _currentRatioWidthValue, cropSize * _currentRatioHeightValue, context),
+                      child: Container(
+                        color: const Color.fromRGBO(
+                            0, 0, 0, 0.4),
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    // LEFT_TOP
+                      left: left - 10,
+                      top: top - 10,
+                      child: GestureDetector(
+                        child: CircleAvatar(
+                          child: Container(),
+                          radius: 10,
+                          backgroundColor:
+                          AppColors.theme,
+                        ),
+                        onTapDown: onButtonPress,
+                        onHorizontalDragUpdate: (data) {
+                          buttonDrag(data,
+                              DragDirection.LEFT_TOP,
+                          );
+                        },
+                        onVerticalDragUpdate: (data) {
+                          buttonDrag(data,
+                              DragDirection.LEFT_TOP,
+                          );
+                        },
+                        onVerticalDragStart: (data) {
+                          buttonDrag(data,
+                              DragDirection.LEFT_TOP,
+                          );
+                        },
+                        onHorizontalDragStart: (data) {
+                          buttonDrag(data,
+                              DragDirection.LEFT_TOP,
+                          );
+                        },
+                      ),
+                  ),
+                  Positioned(
+                    // RIGHT_TOP
+                    left: left + cropSize * _currentRatioWidthValue - 10,
+                    top: top - 10,
+                    child: GestureDetector(
+                      child: CircleAvatar(
+                        child: Container(),
+                        radius: 10,
+                        backgroundColor:
+                        AppColors.theme,
+                      ),
+                      onTapDown: onButtonPress,
+                      onHorizontalDragUpdate: (data) {
+                        buttonDrag(
+                            data,
+                            DragDirection.RIGHT_TOP,
+                        );
+                      },
+                      onVerticalDragUpdate: (data) {
+                        buttonDrag(
+                            data,
+                            DragDirection.RIGHT_TOP,
+                        );
+                      },
+                      onVerticalDragStart: (data) {
+                        buttonDrag(
+                          data,
+                          DragDirection.RIGHT_TOP,);
+                      },
+                      onHorizontalDragStart: (data) {
+                        buttonDrag(data,DragDirection.RIGHT_TOP);
+                      },
+                    ),
+                  ),
+                  Positioned(
+                    // LEFT_BOTTOM
+                    left: left - 10,
+                    top: top + cropSize * _currentRatioHeightValue - 10,
+                    child: GestureDetector(
+                      child: CircleAvatar(
+                        child: Container(),
+                        radius: 10,
+                        backgroundColor:
+                        AppColors.theme,
+                      ),
+                      onTapDown: onButtonPress,
+                      onHorizontalDragUpdate: (data) {
+                        buttonDrag(data,
+                            DragDirection.LEFT_BOTTOM);
+                      },
+                      onVerticalDragUpdate: (data) {
+                        buttonDrag(data,
+                            DragDirection.LEFT_BOTTOM);
+                      },
+                      onVerticalDragStart: (data) =>
+                          buttonDrag(
+                              data,
+                              DragDirection.LEFT_BOTTOM),
+                      onHorizontalDragStart: (data) =>
+                          buttonDrag(
+                              data,
+                              DragDirection.LEFT_BOTTOM),
+                    ),
+                  ),
+                  Positioned(
+                    // RIGHT_BOTTOM
+                    left: left + cropSize * _currentRatioWidthValue - 10,
+                    top: top + cropSize * _currentRatioHeightValue - 10,
+                    child: GestureDetector(
+                      child: CircleAvatar(
+                        child: Container(),
+                        radius: 10,
+                        backgroundColor:
+                        AppColors.theme,
+                      ),
+                      onTapDown: onButtonPress,
+                      onHorizontalDragUpdate: (data) =>
+                          buttonDrag(
+                              data,
+                              DragDirection.RIGHT_BOTTOM),
+                      onVerticalDragUpdate: (data) =>
+                          buttonDrag(
+                              data,
+                              DragDirection.RIGHT_BOTTOM),
+                      onVerticalDragStart: (data) =>
+                          buttonDrag(
+                              data,
+                              DragDirection.RIGHT_BOTTOM),
+                      onHorizontalDragStart: (data) =>
+                          buttonDrag(
+                              data,
+                              DragDirection.RIGHT_BOTTOM),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
   void _onPressDone(
       Library.Image? imageFromLibrary,
       double cropSizeWidth,

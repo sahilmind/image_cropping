@@ -38,8 +38,6 @@ class _MyAppState extends State<MyApp> {
       body: InkWell(
         onTap: () async {
           showImagePickerDialog();
-
-
         },
         child: Container(
           margin: EdgeInsets.all(5),
@@ -112,7 +110,9 @@ class _MyAppState extends State<MyApp> {
                 style: TextStyle(color: Colors.red),
               ),
             ),
-            Padding(padding: EdgeInsets.only(top: 50.0)),
+            Padding(
+              padding: EdgeInsets.only(top: 50.0),
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
@@ -147,35 +147,30 @@ class _MyAppState extends State<MyApp> {
                 ),
               ],
             ),
-
           ],
         ),
       ),
     );
-    showDialog(context: context, builder: (BuildContext context) => dialog, barrierDismissible: false, );
+    showDialog(
+      context: context,
+      builder: (BuildContext context) => dialog,
+      barrierDismissible: false,
+    );
   }
 
   Future<void> openImagePicker(source) async {
-    var pickedFile =
-        await ImagePicker().getImage(source: source);
+    var pickedFile = await ImagePicker().getImage(source: source);
     final _imageBytes = await pickedFile?.readAsBytes();
-    ImageCropping(
-      context,
-      _imageBytes!,
-          (image) {
-        setState(() {
-          _imageData = image;
-        });
-      },
-          () {
-        // Start Loading.
-        AppLoader.show(context);
-      },
-          () {
-        // End Loading.
-        AppLoader.hide();
-      }
-    ).cropImage();
+    ImageCropping(context, _imageBytes!, (image) {
+      setState(() {
+        _imageData = image;
+      });
+    }, () {
+      // Start Loading.
+      AppLoader.show(context);
+    }, () {
+      // End Loading.
+      AppLoader.hide();
+    }).cropImage();
   }
-
 }

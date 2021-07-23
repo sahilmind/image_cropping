@@ -1,4 +1,5 @@
 enum DragDirection {
+  ALL,
   LEFT_TOP,
   LEFT_BOTTOM,
   RIGHT_TOP,
@@ -15,4 +16,10 @@ enum ImageRatio {
   RATIO_3_2,
   RATIO_4_3,
   RATIO_16_9,
+  FREE,
+}
+
+enum ImageRotation {
+  LEFT,
+  RIGHT,
 }

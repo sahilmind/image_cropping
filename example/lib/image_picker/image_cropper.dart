@@ -38,6 +38,7 @@ class ImageCropper {
   double _deviceWidth = 0;
   double _deviceHeight = 0;
 
+  double _defaultCropSize = 100;
   double _cropSizeWidth = 100;
   double _cropSizeHeight = 100;
   double _minCropSizeWidth = 20;
@@ -169,7 +170,7 @@ class ImageCropper {
     );
   }
 
-  void changeRatio(state, ImageRatio imageRatio) {
+  void changeImageRatio(state, ImageRatio imageRatio) {
     switch (imageRatio) {
       case ImageRatio.RATIO_1_2:
         _currentRatioWidth = 1;
@@ -191,10 +192,8 @@ class ImageCropper {
         _currentRatioWidth = 1;
         _currentRatioHeight = 1;
     }
-    _cropSizeWidth = 20;
-    _cropSizeHeight = 20;
-    _cropSizeWidth *= _currentRatioWidth;
-    _cropSizeHeight *= _currentRatioHeight;
+    _cropSizeWidth = _defaultCropSize;
+    _cropSizeHeight = (_defaultCropSize * _currentRatioHeight) / _currentRatioWidth;
     selectedImageRatio = imageRatio;
     _setDefaultButtonPosition();
     state(() {});
@@ -211,7 +210,7 @@ class ImageCropper {
           children: [
             InkWell(
               onTap: () {
-                changeRatio(state, ImageRatio.FREE);
+                changeImageRatio(state, ImageRatio.FREE);
               },
               child: Text(
                 "Free",
@@ -227,7 +226,7 @@ class ImageCropper {
             ),
             InkWell(
               onTap: () {
-                changeRatio(state, ImageRatio.RATIO_1_1);
+                changeImageRatio(state, ImageRatio.RATIO_1_1);
               },
               child: Text(
                 "1:1",
@@ -243,7 +242,7 @@ class ImageCropper {
             ),
             InkWell(
               onTap: () {
-                changeRatio(state, ImageRatio.RATIO_1_2);
+                changeImageRatio(state, ImageRatio.RATIO_1_2);
               },
               child: Text(
                 "1:2",
@@ -259,7 +258,7 @@ class ImageCropper {
             ),
             InkWell(
               onTap: () {
-                changeRatio(state, ImageRatio.RATIO_3_2);
+                changeImageRatio(state, ImageRatio.RATIO_3_2);
               },
               child: Text(
                 "3:2",
@@ -275,7 +274,7 @@ class ImageCropper {
             ),
             InkWell(
               onTap: () {
-                changeRatio(state, ImageRatio.RATIO_4_3);
+                changeImageRatio(state, ImageRatio.RATIO_4_3);
               },
               child: Text(
                 "4:3",
@@ -291,7 +290,7 @@ class ImageCropper {
             ),
             InkWell(
               onTap: () {
-                changeRatio(state, ImageRatio.RATIO_16_9);
+                changeImageRatio(state, ImageRatio.RATIO_16_9);
               },
               child: Text(
                 "16:9",
@@ -535,13 +534,13 @@ class ImageCropper {
     _leftBottomDX = (leftBottomDx == -1) ? _leftTopDX : leftBottomDx;
     _leftBottomDY =
         (leftBottomDy == -1) ? _leftTopDY + _cropSizeHeight : leftBottomDy;
-    // print("_leftTopDX: ${_leftTopDX} _leftTopDY: ${_leftTopDY}");
+    print("_leftTopDX: ${_leftTopDX} _leftTopDY: ${_leftTopDY}");
   }
 
   void _setRightTopCropButtonPosition({rightTopDx = -1, rightTopDy = -1}) {
     _rightTopDX = (rightTopDx == -1) ? _leftTopDX + _cropSizeWidth : rightTopDx;
     _rightTopDY = (rightTopDy == -1) ? _leftTopDY : rightTopDy;
-    // print("_rightTopDX: ${_rightTopDX} _rightTopDY: ${_rightTopDY}");
+    print("_rightTopDX: ${_rightTopDX} _rightTopDY: ${_rightTopDY}");
   }
 
   void _setRightBottomCropButtonPosition(
@@ -550,7 +549,7 @@ class ImageCropper {
         (rightBottomDx == -1) ? _leftTopDX + _cropSizeWidth : rightBottomDx;
     _rightBottomDY =
         (rightBottomDy == -1) ? _rightTopDY + _cropSizeHeight : rightBottomDy;
-    // print("_rightTopDX: ${_rightTopDX} _rightTopDY: ${_rightTopDY}");
+    print("_rightTopDX: ${_rightTopDX} _rightTopDY: ${_rightTopDY}");
   }
 
   void _setImageHeightWidth(ui.Image image) {
@@ -578,7 +577,11 @@ class ImageCropper {
   void _manageLeftTopButtonDrag(
       state, DragUpdateDetails details, DragDirection dragDirection) {
     var globalPositionDX = details.globalPosition.dx - 10;
-    var globalPositionDY = details.globalPosition.dy - 30;
+    var globalPositionDY = details.globalPosition.dy - 70;
+
+    if (globalPositionDY < 1) {
+      return;
+    }
 
     var _previousLeftTopDX = _leftTopDX;
     var _previousLeftTopDY = _leftTopDY;
@@ -646,6 +649,17 @@ class ImageCropper {
         _cropSizeHeight -=
             (_leftTopDX - _previousLeftTopDX) * _currentRatioHeight;
       }
+
+      if (_cropSizeWidth < _minCropSizeWidth ||
+          _cropSizeHeight < _minCropSizeHeight ||
+          _leftTopDX + _cropSizeWidth + squareCircleSize > _stackGlobalKey.globalPaintBounds!.width // this condition checks the right top crop button is outside the screen.
+      ) {
+        _cropSizeWidth = _previousCropWidth;
+        _cropSizeHeight = _previousCropHeight;
+        _leftTopDX = _previousLeftTopDX;
+        _leftTopDY = _previousLeftTopDY;
+        return;
+      }
       _setLeftBottomCropButtonPosition(
           leftBottomDx: _leftTopDX, leftBottomDy: _leftTopDY + _cropSizeHeight);
       _setRightTopCropButtonPosition(
@@ -661,7 +675,12 @@ class ImageCropper {
   void _manageLeftBottomButtonDrag(
       state, DragUpdateDetails details, DragDirection dragDirection) {
     var globalPositionDX = details.globalPosition.dx - 10;
-    var globalPositionDY = details.globalPosition.dy - 30;
+    var globalPositionDY = details.globalPosition.dy - 70;
+
+    if ((globalPositionDY + squareCircleSize) >
+        _stackGlobalKey.globalPaintBounds!.height) {
+      return;
+    }
 
     var _previousLeftBottomDX = _leftBottomDX;
     var _previousLeftBottomDY = _leftBottomDY;
@@ -719,13 +738,23 @@ class ImageCropper {
         _cropSizeWidth +=
             (_previousLeftBottomDX - _leftBottomDX) * _currentRatioWidth;
         _cropSizeHeight +=
-            (_leftBottomDX - _previousLeftBottomDX) * _currentRatioHeight;
+            (_previousLeftBottomDX - _leftBottomDX) * _currentRatioHeight;
       } else {
         // moving to right side
         _cropSizeWidth -=
             (_leftBottomDX - _previousLeftBottomDX) * _currentRatioWidth;
         _cropSizeHeight -=
             (_leftBottomDX - _previousLeftBottomDX) * _currentRatioHeight;
+      }
+      if (_cropSizeWidth < _minCropSizeWidth ||
+          _cropSizeHeight < _minCropSizeHeight||
+          _leftTopDX + _cropSizeWidth + squareCircleSize > _stackGlobalKey.globalPaintBounds!.width // this condition checks the right top crop button is outside the screen.
+       ) {
+        _cropSizeWidth = _previousCropWidth;
+        _cropSizeHeight = _previousCropHeight;
+        _leftBottomDX = _previousLeftBottomDX;
+        _leftBottomDY = _previousLeftBottomDY;
+        return;
       }
       _setLeftTopCropButtonPosition(
           leftTopDx: _leftBottomDX, leftTopDy: _leftBottomDY - _cropSizeHeight);
@@ -743,7 +772,11 @@ class ImageCropper {
   void _manageRightTopButtonDrag(
       state, DragUpdateDetails details, DragDirection dragDirection) {
     var globalPositionDX = details.globalPosition.dx - 10;
-    var globalPositionDY = details.globalPosition.dy - 30;
+    var globalPositionDY = details.globalPosition.dy - 70;
+
+    if (globalPositionDY < 1) {
+      return;
+    }
 
     var _previousRightTopDX = _rightTopDX;
     var _previousRightTopDY = _rightTopDY;
@@ -809,6 +842,20 @@ class ImageCropper {
         _cropSizeHeight +=
             (_rightTopDX - _previousRightTopDX) * _currentRatioHeight;
       }
+
+      // check crop size less than declared min crop size. then set to previous size.
+      if (_cropSizeWidth < _minCropSizeWidth ||
+          _cropSizeHeight < _minCropSizeHeight
+          ||
+          (_rightTopDX - _cropSizeWidth) < 1 // this condition checks the left top crop button is outside the screen.
+      ) {
+        _cropSizeWidth = _previousCropWidth;
+        _cropSizeHeight = _previousCropHeight;
+        _rightTopDX = _previousRightTopDX;
+        _rightTopDY = _previousRightTopDY;
+        return;
+      }
+
       _setLeftTopCropButtonPosition(
           leftTopDx: _rightTopDX - _cropSizeWidth, leftTopDy: _rightTopDY);
       _setLeftBottomCropButtonPosition(
@@ -825,11 +872,15 @@ class ImageCropper {
   void _manageRightBottomButtonDrag(
       state, DragUpdateDetails details, DragDirection dragDirection) {
     var globalPositionDX = details.globalPosition.dx - 10;
-    var globalPositionDY = details.globalPosition.dy - 30;
+    var globalPositionDY = details.globalPosition.dy - 70;
 
-    /*if (isPointerOutside(globalPositionDX, globalPositionDY)) {
+    /*print("stack: ${}");
+    print("stack bottom: ${_stackGlobalKey.globalPaintBounds!.bottom}");
+*/
+    if ((globalPositionDY + squareCircleSize) >
+        _stackGlobalKey.globalPaintBounds!.height) {
       return;
-    }*/
+    }
 
     var _previousRightBottomDX = _rightBottomDX;
     var _previousRightBottomDY = _rightBottomDY;
@@ -898,6 +949,19 @@ class ImageCropper {
         _cropSizeHeight +=
             (_rightBottomDX - _previousRightBottomDX) * _currentRatioHeight;
       }
+
+      // check crop size less than declared min crop size. then set to previous size.
+      if (_cropSizeWidth < _minCropSizeWidth ||
+          _cropSizeHeight < _minCropSizeHeight ||
+          (_rightTopDX - _cropSizeWidth) < 1 // this condition checks the left top crop button is outside the screen.
+      ) {
+        _cropSizeWidth = _previousCropWidth;
+        _cropSizeHeight = _previousCropHeight;
+        _rightBottomDX = _previousRightBottomDX;
+        _rightBottomDY = _previousRightBottomDY;
+        return;
+      }
+
       _setRightTopCropButtonPosition(
           rightTopDx: _rightBottomDX,
           rightTopDy: _rightBottomDY - _cropSizeHeight);
@@ -913,18 +977,21 @@ class ImageCropper {
   void _manageSquareDrag(
       state, DragUpdateDetails details, DragDirection dragDirection) {
 
-    /*print("stack: ${_stackGlobalKey.globalPaintBounds}");
-    print("globalPosition dx: ${details.globalPosition.dx}");
-    print("globalPosition dy: ${details.globalPosition.dy}");
-    print("localPosition: ${details.localPosition}");*/
+    var globalPositionDX = details.globalPosition.dx - 70;
+    var globalPositionDY = details.globalPosition.dy - 70;
 
-    var globalPositionDX = details.globalPosition.dx - 65;
-    var globalPositionDY = details.globalPosition.dy - 65;
 
-    if (isPointerOutside(globalPositionDX, globalPositionDY)) {
-      return;
+    if (globalPositionDX < 1 ||
+        (globalPositionDX + _cropSizeWidth + (squareCircleSize / 2)) >
+            _deviceWidth){
+      globalPositionDX = _leftTopDX;
     }
 
+    if (globalPositionDY < 1 ||
+        (globalPositionDY + _cropSizeHeight + (squareCircleSize / 2)) >
+            _imageViewMaxHeight){
+      globalPositionDY = _leftTopDY;
+    }
     _setLeftTopCropButtonPosition(
         leftTopDx: globalPositionDX, leftTopDy: globalPositionDY);
     _setLeftBottomCropButtonPosition(
@@ -954,14 +1021,15 @@ class ImageCropper {
 
   void _onPressDone(BuildContext context, Library.Image sourceImage, double x,
       double y, double width, double height, state) {
-    _libraryImage = setWhiteColorInImage(
-        _libraryImage,
-        _imageWidth,
-        _imageHeight,
-        _imageGlobalKey.globalPaintBounds!.width,
-        _imageGlobalKey.globalPaintBounds!.height,
-        _stackGlobalKey.globalPaintBounds!.width,
-        _stackGlobalKey.globalPaintBounds!.height);
+    // image view width / height
+    var imageViewWidth = _imageGlobalKey.globalPaintBounds!.width;
+    var imageViewHeight = _imageGlobalKey.globalPaintBounds!.height;
+
+    var stackWidth = _stackGlobalKey.globalPaintBounds!.width;
+    var stackHeight = _stackGlobalKey.globalPaintBounds!.height;
+
+    _libraryImage = setWhiteColorInImage(_libraryImage, _imageWidth,
+        _imageHeight, imageViewWidth, imageViewHeight, stackWidth, stackHeight);
 
     /*_imageBytes =
         Uint8List.fromList(Library.encodeJpg(_libraryImage, quality: 100));
@@ -971,43 +1039,19 @@ class ImageCropper {
     _imageWidth = _libraryImage.width.toDouble();
     _imageHeight = _libraryImage.height.toDouble();
 
-    var imageViewWidth = _imageGlobalKey.globalPaintBounds!.width;
-    var imageViewHeight = _imageGlobalKey.globalPaintBounds!.height;
-
     print("_imageWidth: $_imageWidth");
     print("_imageHeight: $_imageHeight");
 
     print("imageViewWidth: $imageViewWidth");
     print("imageViewHeight: $imageViewHeight");
 
-    /*var leftX = (_leftTopGlobalKey.globalPaintBounds!.left) -
-        _imageGlobalKey.globalPaintBounds!.left;
-    var leftY = (_leftTopGlobalKey.globalPaintBounds!.top) -
-        _imageGlobalKey.globalPaintBounds!.top;*/
-
-    /*var leftX = _leftTopGlobalKey.globalPaintBounds!.left;
-    var leftY = _leftTopGlobalKey.globalPaintBounds!.top;*/
-
     var leftX = _leftTopDX;
     var leftY = _leftTopDY;
 
-    var imageCropX = (_imageWidth * leftX) / imageViewWidth;
-    var imageCropY = (_imageHeight * leftY) / imageViewHeight;
-    var imageCropWidth = (_imageWidth * _cropSizeWidth) / imageViewWidth;
-    var imageCropHeight = (_imageHeight * _cropSizeHeight) / imageViewHeight;
-
-    print("leftX: $leftX");
-    print("leftY: $leftY");
-    print("_leftTopDX: $_leftTopDX");
-    print("_leftTopDY: $_leftTopDY");
-    print("imageCropX: $imageCropX");
-    print("imageCropY: $imageCropY");
-    print("imageCropWidth: $imageCropWidth");
-    print("imageCropHeight: $imageCropHeight");
-    print("_currentRotationDegreeValue: $_currentRotationDegreeValue");
-
-    /*_libraryImage =
-        Library.copyRotate(_libraryImage, _currentRotationDegreeValue);*/
+    var imageCropX = (_imageWidth * leftX) / stackWidth;
+    var imageCropY = (_imageHeight * leftY) / stackHeight;
+    var imageCropWidth = (_imageWidth * _cropSizeWidth) / stackWidth;
+    var imageCropHeight = (_imageHeight * _cropSizeHeight) / stackHeight;
 
     _libraryImage = Library.copyCrop(_libraryImage, imageCropX.toInt(),
         imageCropY.toInt(), imageCropWidth.toInt(), imageCropHeight.toInt());
@@ -1035,40 +1079,32 @@ Library.Image setWhiteColorInImage(
     double renderedImageHeight,
     double stackWidth,
     double stackHeight) {
-  double finalImageWidth = (stackWidth > imageWidth) ? stackWidth : imageWidth;
+  bool isWhiteVisibleInScreenWidth = stackWidth > renderedImageWidth;
+  bool isWhiteVisibleInScreenHeight = stackWidth > renderedImageHeight;
+
+  double finalImageWidth = (stackWidth > imageWidth)
+      ? stackWidth
+      : (isWhiteVisibleInScreenWidth)
+          ? (stackWidth * imageWidth) / renderedImageWidth
+          : imageWidth;
   double finalImageHeight = (stackHeight > imageHeight)
       ? stackHeight
-      : (stackHeight * imageHeight) / renderedImageHeight;
-  int centreImagePoint = ((finalImageHeight / 2) -
+      : (isWhiteVisibleInScreenHeight)
+          ? (stackHeight * imageHeight) / renderedImageHeight
+          : imageHeight;
+
+  int centreImageWidthPoint = ((finalImageWidth / 2) -
+          (((finalImageWidth * renderedImageWidth) / stackWidth) / 2))
+      .toInt();
+
+  int centreImageHeightPoint = ((finalImageHeight / 2) -
           (((finalImageHeight * renderedImageHeight) / stackHeight) / 2))
       .toInt();
 
   var whiteImage =
       Library.Image(finalImageWidth.toInt(), finalImageHeight.toInt());
   whiteImage = whiteImage.fill(0xffffff);
-  var mergedImage =
-      Library.drawImage(whiteImage, image, dstY: centreImagePoint);
+  var mergedImage = Library.drawImage(whiteImage, image,
+      dstX: centreImageWidthPoint, dstY: centreImageHeightPoint);
   return mergedImage;
-
-  /*Library.Image src, dest = details.dest;
-  src = Library.decodeImage(details.bytes)!;
-  int xStart = ((details.width / 2) - (src.width / 2)).toInt();
-  int xEnd = xStart + src.width;
-  int yStart = ((details.height / 2) - (src.height / 2)).toInt();
-  int yEnd = yStart + src.height;
-  for (int x = 0; x < details.width; x++) {
-    for (int y = 0; y < details.height; y++) {
-      if (x >= xStart && x < xEnd && y >= yStart && y < yEnd) {
-        int p = src.getPixel(x - xStart, y - yStart);
-        if (Color(p).alpha == 0) {
-          dest.setPixel(x, y, 0xffffff);
-        } else {
-          dest.setPixel(x, y,  );
-        }
-      } else {
-        dest.setPixel(x, y, 0xffffff);
-      }
-    }
-  }
-  return dest;*/
 }

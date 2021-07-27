@@ -512,16 +512,10 @@ class ImageCropper {
 
   void _setLeftTopCropButtonPosition({leftTopDx = -1, leftTopDy = -1}) {
     _leftTopDX = (leftTopDx == -1)
-        ? ((_deviceWidth > _deviceHeight)
-                ? _deviceHeight / 2
-                : _deviceWidth / 2) -
-            (_cropSizeWidth / 2)
+        ? (_deviceWidth / 2) - (_cropSizeWidth / 2)
         : leftTopDx;
     _leftTopDY = (leftTopDy == -1)
-        ? ((_deviceWidth > _deviceHeight)
-                ? _deviceHeight / 2
-                : _deviceWidth / 2) -
-            (_cropSizeWidth / 2)
+        ? (_deviceHeight / 2) - _cropSizeHeight
         : leftTopDy;
 
     _leftTopDX;
@@ -1049,7 +1043,7 @@ class ImageCropper {
     var leftY = _leftTopDY;
 
     var imageCropX = (_imageWidth * leftX) / stackWidth;
-    var imageCropY = (_imageHeight * leftY) / stackHeight;
+    var imageCropY = (_imageHeight * leftY) / stackHeight + squareCircleSize;
     var imageCropWidth = (_imageWidth * _cropSizeWidth) / stackWidth;
     var imageCropHeight = (_imageHeight * _cropSizeHeight) / stackHeight;
 

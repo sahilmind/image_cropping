@@ -128,16 +128,15 @@ class _MyMainState extends State<MyMain> {
   void openImagePicker(source) async {
     var pickedFile = await ImagePicker().getImage(source: source);
     imageBytes = await pickedFile?.readAsBytes();
-    ImageCropper(context, imageBytes!, () {}, () {}, (data) {
-      if (data is String) {
-        // some error generates from future.
+    ImageCropper.cropImage(context, imageBytes!, () {
 
-      } else {
-        // Here we will get data in UInt8List.
-        imageBytes = data;
-        setState(() {});
-      }
-    }, visibleOtherAspectRatios: true, squareBorderWidth: 2)
-        .showImageCroppingDialog();
+    }, () {
+
+    }, (data) {
+      imageBytes = data;
+      setState(() {
+      });
+    });
   }
+
 }

@@ -1,3 +1,6 @@
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:image/image.dart' as Library;
 
 Library.Image drawPixelInImage(Library.Image image, int x, int y, int color){
@@ -42,4 +45,20 @@ Library.Image setWhiteColorInImage(
 
   var mergedImage = Library.drawImage(whiteImage, image, dstX: centreImageWidthPoint, dstY: centreImageHeightPoint);
   return mergedImage;
+}
+
+Library.Image decodeBytesToImage(Uint8List imageBytes){
+  return Library.decodeJpg(imageBytes);
+}
+
+List<int> compressImageToList(Library.Image image){
+  return Library.encodeJpg(image, quality: 20);
+}
+
+Uint8List compressImageToBytes(List<int> intImage){
+  return Uint8List.fromList(intImage);
+}
+
+Library.Image compressImage(List<int> intImage){
+  return Library.decodeJpg(intImage);
 }

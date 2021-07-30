@@ -121,9 +121,10 @@ class _MyMainState extends State<MyMain> {
 
   void openImagePicker(source) async {
     showLoader();
-    var pickedFile = await ImagePicker().getImage(source: source);
+    var pickedFile = await ImagePicker().getImage(source: source,);
     imageBytes = await pickedFile?.readAsBytes();
     hideLoader();
+
     ImageCropper.cropImage(context, imageBytes!, () {
       showLoader();
     }, () {
@@ -135,6 +136,9 @@ class _MyMainState extends State<MyMain> {
   }
 
   void showLoader() {
+    if(EasyLoading.isShow){
+      return;
+    }
     EasyLoading.show(status: 'Loading...');
   }
 

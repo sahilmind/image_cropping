@@ -1,15 +1,14 @@
 import 'dart:typed_data';
-import 'dart:ui' as ui;
 
 import 'package:example/image_picker/common/app_button.dart';
 import 'package:example/image_picker/constant/color_constant.dart';
 import 'package:flutter/foundation.dart' show compute, kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:image/image.dart' as Library;
 
 import 'constant/enums.dart';
-import 'util/image_converter.dart';
 import 'util/image_utils.dart';
 import 'util/widget_bound.dart';
 
@@ -118,11 +117,10 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
   GlobalKey _cropMenuGlobalKey = GlobalKey();
 
   late Library.Image _libraryImage;
+  Uint8List? _finalImageBytes;
 
   double _imageViewMaxHeight = 0;
   double _topViewHeight = 0;
-
-  ui.Image? uiImage;
 
   int _maximumImageWidthSize = 720;
   int _maximumImageHeightSize = 720;
@@ -130,54 +128,41 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
   @override
   void initState() {
     _imageLoadingStarted();
+    _setTopHeight();
     _setDeviceOrientation();
     _generateLibraryImage();
     _setDeviceHeightWidth();
     _setDefaultButtonPosition();
+    _imageLoadingFinished();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<ui.Image>(
-      future: bytesToImage(widget._imageBytes),
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          _setTopHeight();
-
-          _imageLoadingFinished();
-          uiImage = snapshot.data!;
-          // set Image width and height.
-          _setImageHeightWidth(uiImage!);
-          // show data.ggssv
-          return StatefulBuilder(
-            builder: (context, state) {
-              return SafeArea(
-                child: Material(
-                  child: Container(
-                    width: _deviceWidth,
-                    child: Column(
-                      children: [
-                        _showCroppingButtons(state),
-                        _showCropImageView(state),
-                        _showCropImageRatios(state),
-                      ],
-                    ),
-                  ),
+    // set Image width and height.
+    // show data.ggssv
+    if(_finalImageBytes!=null) {
+      return StatefulBuilder(
+        builder: (context, state) {
+          return SafeArea(
+            child: Material(
+              child: Container(
+                width: _deviceWidth,
+                child: Column(
+                  children: [
+                    _showCroppingButtons(state),
+                    _showCropImageView(state),
+                    _showCropImageRatios(state),
+                  ],
                 ),
-              );
-            },
+              ),
+            ),
           );
-        } else if (snapshot.hasError) {
-          // show error
-          widget._onImageDoneListener(snapshot.error.toString());
-          return Container();
-        } else {
-          // show laoder
-          return Container();
-        }
-      },
-    );
+        },
+      );
+    } else {
+      return Container();
+    }
   }
 
   void _setDeviceOrientation() {
@@ -194,17 +179,14 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
     widget._onImageEndLoading();
   }
 
-  void _generateLibraryImage() {
-    _libraryImage = Library.decodeImage(widget._imageBytes)!;
-    if (_libraryImage.width > _maximumImageWidthSize) {
-      _libraryImage =
-          Library.copyResize(_libraryImage, width: _maximumImageWidthSize);
-    }
-    if (_libraryImage.height > _maximumImageHeightSize) {
-      _libraryImage =
-          Library.copyResize(_libraryImage, height: _maximumImageHeightSize);
-    }
-    widget._imageBytes = Uint8List.fromList(Library.encodeJpg(_libraryImage));
+  void _generateLibraryImage() async {
+    widget._imageBytes = await FlutterImageCompress.compressWithList(
+      widget._imageBytes,
+      quality: 25,
+    );
+    _libraryImage = Library.decodeJpg(widget._imageBytes);
+    _finalImageBytes = widget._imageBytes;
+    _setImageHeightWidth();
     setState(() {});
   }
 
@@ -214,9 +196,9 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
     print("_deviceWidth: ${_deviceWidth} _deviceHeight: ${_deviceHeight}");
   }
 
-  void _setImageHeightWidth(ui.Image image) {
-    _imageWidth = image.width.toDouble();
-    _imageHeight = image.height.toDouble();
+  void _setImageHeightWidth() {
+    _imageWidth = _libraryImage.width.toDouble();
+    _imageHeight = _libraryImage.height.toDouble();
     print("_imageWidth: ${_imageWidth} _imageHeight: ${_imageHeight}");
   }
 
@@ -294,7 +276,7 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
           color: AppColors.black,
           child: Center(
             child: Image.memory(
-              widget._imageBytes,
+              _finalImageBytes!,
               key: _imageGlobalKey,
               fit: BoxFit.cover,
             ),
@@ -1072,6 +1054,7 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
 
   void _onPressDone(BuildContext context, Library.Image sourceImage, double x,
       double y, double width, double height, state) {
+    _imageLoadingStarted();
     // image view width / height
     var imageViewWidth = _imageGlobalKey.globalPaintBounds!.width;
     var imageViewHeight = _imageGlobalKey.globalPaintBounds!.height;
@@ -1113,6 +1096,7 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
     var _libraryUInt8List =
         Uint8List.fromList(Library.encodeJpg(_libraryImage, quality: 100));
 
+    _imageLoadingFinished();
     widget._onImageDoneListener(_libraryUInt8List);
     Navigator.pop(widget._context);
   }

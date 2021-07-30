@@ -104,13 +104,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.0.0"
-  flutter_overlay_loader:
+  flutter_image_compress:
     dependency: "direct main"
     description:
-      name: flutter_overlay_loader
+      name: flutter_image_compress
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.1.1"
+    version: "1.0.0"
   flutter_plugin_android_lifecycle:
     dependency: transitive
     description:
@@ -119,7 +119,7 @@ packages:
     source: hosted
     version: "2.0.2"
   flutter_spinkit:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: flutter_spinkit
       url: "https://pub.dartlang.org"

@@ -15,7 +15,7 @@ Library.Image setWhiteColorInImage(
     double stackWidth,
     double stackHeight) {
   bool isWhiteVisibleInScreenWidth = stackWidth > renderedImageWidth;
-  bool isWhiteVisibleInScreenHeight = stackWidth > renderedImageHeight;
+  bool isWhiteVisibleInScreenHeight = stackHeight > renderedImageHeight;
 
   double finalImageWidth = (stackWidth > imageWidth)
       ? stackWidth
@@ -39,7 +39,7 @@ Library.Image setWhiteColorInImage(
   var whiteImage =
   Library.Image(finalImageWidth.toInt(), finalImageHeight.toInt());
   whiteImage = whiteImage.fill(colorForWhiteSpace);
-  var mergedImage = Library.drawImage(whiteImage, image,
-      dstX: centreImageWidthPoint, dstY: centreImageHeightPoint);
+
+  var mergedImage = Library.drawImage(whiteImage, image, dstX: centreImageWidthPoint, dstY: centreImageHeightPoint);
   return mergedImage;
 }

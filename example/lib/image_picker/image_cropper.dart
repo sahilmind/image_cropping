@@ -124,10 +124,13 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
 
   ui.Image? uiImage;
 
+  int _maximumImageWidthSize = 720;
+  int _maximumImageHeightSize = 720;
+
   @override
   void initState() {
-    _setDeviceOrientation();
     _imageLoadingStarted();
+    _setDeviceOrientation();
     _generateLibraryImage();
     _setDeviceHeightWidth();
     _setDefaultButtonPosition();
@@ -193,6 +196,16 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
 
   void _generateLibraryImage() {
     _libraryImage = Library.decodeImage(widget._imageBytes)!;
+    if (_libraryImage.width > _maximumImageWidthSize) {
+      _libraryImage =
+          Library.copyResize(_libraryImage, width: _maximumImageWidthSize);
+    }
+    if (_libraryImage.height > _maximumImageHeightSize) {
+      _libraryImage =
+          Library.copyResize(_libraryImage, height: _maximumImageHeightSize);
+    }
+    widget._imageBytes = Uint8List.fromList(Library.encodeJpg(_libraryImage));
+    setState(() {});
   }
 
   void _setDeviceHeightWidth() {
@@ -277,11 +290,14 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         _imageViewMaxHeight = constraints.maxHeight;
-        return Center(
-          child: Image.memory(
-            widget._imageBytes,
-            key: _imageGlobalKey,
-            fit: BoxFit.cover,
+        return Container(
+          color: AppColors.black,
+          child: Center(
+            child: Image.memory(
+              widget._imageBytes,
+              key: _imageGlobalKey,
+              fit: BoxFit.cover,
+            ),
           ),
         );
       },
@@ -296,7 +312,7 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
         onPanUpdate: (details) {
           _buttonDrag(state, details, DragDirection.ALL);
         },
-        onPanDown: (details){
+        onPanDown: (details) {
           _startedDX = details.globalPosition.dx - _leftTopDX;
           _startedDY = details.globalPosition.dy - _leftTopDY;
         },
@@ -1063,6 +1079,8 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
     var stackWidth = _stackGlobalKey.globalPaintBounds!.width;
     var stackHeight = _stackGlobalKey.globalPaintBounds!.height;
 
+    // _libraryImage = Library.bakeOrientation(_libraryImage);
+
     _libraryImage = setWhiteColorInImage(
         _libraryImage,
         widget._colorForWhiteSpace,
@@ -1073,7 +1091,7 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
         stackWidth,
         stackHeight);
 
-    /*_imageBytes =
+    /*widget._imageBytes =
         Uint8List.fromList(Library.encodeJpg(_libraryImage, quality: 100));
     state(() {});
 

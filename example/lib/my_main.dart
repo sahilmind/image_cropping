@@ -2,13 +2,14 @@ import 'dart:typed_data';
 
 import 'package:example/image_picker/image_cropper.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart' show rootBundle;
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:image_picker/image_picker.dart';
 
 void main() {
   runApp(
     MaterialApp(
       debugShowCheckedModeBanner: false,
+      builder: EasyLoading.init(),
       home: MyMain(),
     ),
   );
@@ -22,7 +23,6 @@ class MyMain extends StatefulWidget {
 }
 
 class _MyMainState extends State<MyMain> {
-
   Uint8List? imageBytes;
 
   @override
@@ -119,24 +119,26 @@ class _MyMainState extends State<MyMain> {
     );
   }
 
-  Future<void> getImageBytes() async {
-    imageBytes =
-        (await rootBundle.load('assets/test.png')).buffer.asUint8List();
-    setState(() {});
-  }
-
   void openImagePicker(source) async {
+    showLoader();
     var pickedFile = await ImagePicker().getImage(source: source);
     imageBytes = await pickedFile?.readAsBytes();
+    hideLoader();
     ImageCropper.cropImage(context, imageBytes!, () {
-
+      showLoader();
     }, () {
-
+      hideLoader();
     }, (data) {
       imageBytes = data;
-      setState(() {
-      });
+      setState(() {});
     });
   }
 
+  void showLoader() {
+    EasyLoading.show(status: 'Loading...');
+  }
+
+  void hideLoader() {
+    EasyLoading.dismiss();
+  }
 }

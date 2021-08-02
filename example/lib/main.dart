@@ -1,16 +1,16 @@
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:image_cropping/image_cropping.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:image_cropping/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 
 void main() {
   runApp(
-    MediaQuery(
-      data: MediaQueryData(),
-      child: MaterialApp(
-        home: MyApp(),
-      ),
+    MaterialApp(
+      debugShowCheckedModeBanner: false,
+      builder: EasyLoading.init(),
+      home: MyApp(),
     ),
   );
 }
@@ -23,8 +23,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  Uint8List? _imageData;
-  bool _isImageUploading = false;
+  Uint8List? imageBytes;
 
   @override
   void initState() {
@@ -34,58 +33,21 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: InkWell(
-        onTap: () async {
-          showImagePickerDialog();
-        },
-        child: Container(
-          margin: EdgeInsets.all(5),
-          alignment: Alignment.center,
-          width: 200,
-          height: 200,
-          padding: EdgeInsets.all(5),
-          decoration: BoxDecoration(
-            color: Colors.transparent,
-            borderRadius: BorderRadius.all(
-              Radius.circular(10),
-            ),
-          ),
-          child: Stack(
-            children: [
-              Visibility(
-                visible: _imageData != null,
-                child: _imageData == null
-                    ? Container()
-                    : Image.memory(_imageData!),
-              ),
-              Visibility(
-                visible: _imageData == null,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Icon(
+      body: Container(
+        color: Colors.green,
+        child: Center(
+          child: Center(
+            child: InkWell(
+              child: imageBytes == null
+                  ? Icon(
                       Icons.add_photo_alternate_outlined,
-                      size: 50,
-                      color: Colors.grey,
-                    ),
-                  ],
-                ),
-              ),
-              Visibility(
-                visible: _isImageUploading,
-                child: Container(
-                  color: Colors.black.withOpacity(0.4),
-                  child: Center(
-                    child: SizedBox(
-                      width: 40,
-                      height: 40,
-                      child: CircularProgressIndicator(),
-                    ),
-                  ),
-                ),
-              ),
-            ],
+                      color: Colors.black,
+                    )
+                  : Image.memory(imageBytes!),
+              onTap: () {
+                showImagePickerDialog();
+              },
+            ),
           ),
         ),
       ),
@@ -157,19 +119,30 @@ class _MyAppState extends State<MyApp> {
     );
   }
 
-  Future<void> openImagePicker(source) async {
-    var pickedFile = await ImagePicker().getImage(source: source);
-    final _imageBytes = await pickedFile?.readAsBytes();
-    ImageCropping(context, _imageBytes!, (image) {
-      setState(() {
-        _imageData = image;
-      });
+  void openImagePicker(source) async {
+    showLoader();
+    var pickedFile = await ImagePicker().getImage(source: source,);
+    imageBytes = await pickedFile?.readAsBytes();
+    hideLoader();
+
+    ImageCropper.cropImage(context, imageBytes!, () {
+      showLoader();
     }, () {
-      // Start Loading.
-      // AppLoader.show(context);
-    }, () {
-      // End Loading.
-      // AppLoader.hide();
-    }).cropImage();
+      hideLoader();
+    }, (data) {
+      imageBytes = data;
+      setState(() {});
+    });
+  }
+
+  void showLoader() {
+    if(EasyLoading.isShow){
+      return;
+    }
+    EasyLoading.show(status: 'Loading...');
+  }
+
+  void hideLoader() {
+    EasyLoading.dismiss();
   }
 }

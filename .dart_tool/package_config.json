@@ -80,6 +80,12 @@
       "languageVersion": "2.12"
     },
     {
+      "name": "flutter_image_compress",
+      "rootUri": "file:///Users/mac-0007/Sahil/flutter_versions/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_image_compress-1.1.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "flutter_test",
       "rootUri": "file:///Users/mac-0007/Sahil/flutter_versions/flutter/packages/flutter_test",
       "packageUri": "lib/",
@@ -272,7 +278,7 @@
       "languageVersion": "2.12"
     }
   ],
-  "generated": "2021-07-29T08:52:12.868714Z",
+  "generated": "2021-08-02T05:57:55.559405Z",
   "generator": "pub",
   "generatorVersion": "2.12.3"
 }

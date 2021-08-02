@@ -1,13 +1,13 @@
 import 'dart:typed_data';
 
-import 'package:example/image_picker/common/app_button.dart';
-import 'package:example/image_picker/constant/color_constant.dart';
 import 'package:flutter/foundation.dart' show compute, kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:image/image.dart' as Library;
 
+import 'common/app_button.dart';
+import 'constant/color_constant.dart';
 import 'constant/enums.dart';
 import 'util/image_utils.dart';
 import 'util/widget_bound.dart';
@@ -128,7 +128,6 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
   @override
   void initState() {
     _imageLoadingStarted();
-    _setTopHeight();
     _setDeviceOrientation();
     _generateLibraryImage();
     _setDeviceHeightWidth();
@@ -144,6 +143,7 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
     if(_finalImageBytes!=null) {
       return StatefulBuilder(
         builder: (context, state) {
+          _setTopHeight();
           return SafeArea(
             child: Material(
               child: Container(
@@ -210,9 +210,11 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
   }
 
   void _setTopHeight() {
-    WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
-      _topViewHeight = _stackGlobalKey.globalPaintBounds?.top ?? 0;
-    });
+    if(_topViewHeight==0) {
+      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+        _topViewHeight = _stackGlobalKey.globalPaintBounds?.top ?? 0;
+      });
+    }
   }
 
   void _setLeftTopCropButtonPosition({leftTopDx = -1, leftTopDy = -1}) {
@@ -928,7 +930,10 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
 
     /*print("stack: ${}");
     print("stack bottom: ${_stackGlobalKey.globalPaintBounds!.bottom}");
+
 */
+    print("_topViewHeight: ${_topViewHeight}");
+
     if ((globalPositionDY + widget.squareCircleSize) >
         _stackGlobalKey.globalPaintBounds!.height) {
       return;

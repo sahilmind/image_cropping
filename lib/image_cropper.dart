@@ -122,9 +122,6 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
   double _imageViewMaxHeight = 0;
   double _topViewHeight = 0;
 
-  int _maximumImageWidthSize = 720;
-  int _maximumImageHeightSize = 720;
-
   @override
   void initState() {
     _imageLoadingStarted();
@@ -1052,11 +1049,6 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
         stackWidth,
         stackHeight);
 
-    /*widget._imageBytes =
-        Uint8List.fromList(Library.encodeJpg(_libraryImage, quality: 100));
-    state(() {});
-
-    return;*/
     _imageWidth = _libraryImage.width.toDouble();
     _imageHeight = _libraryImage.height.toDouble();
 

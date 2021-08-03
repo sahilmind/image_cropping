@@ -193,13 +193,11 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
   void _setDeviceHeightWidth() {
     _deviceWidth = MediaQuery.of(widget._context).size.width;
     _deviceHeight = MediaQuery.of(widget._context).size.height;
-    print("_deviceWidth: ${_deviceWidth} _deviceHeight: ${_deviceHeight}");
   }
 
   void _setImageHeightWidth() {
     _imageWidth = _libraryImage.width.toDouble();
     _imageHeight = _libraryImage.height.toDouble();
-    print("_imageWidth: ${_imageWidth} _imageHeight: ${_imageHeight}");
   }
 
   void _setDefaultButtonPosition() {
@@ -223,8 +221,6 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
         : leftTopDx;
     _leftTopDY =
         (leftTopDy == -1) ? (_deviceHeight / 2) - _cropSizeHeight : leftTopDy;
-
-    print("_leftTopDX: ${_leftTopDX} _leftTopDY: ${_leftTopDY}");
   }
 
   void _setLeftBottomCropButtonPosition(
@@ -232,13 +228,11 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
     _leftBottomDX = (leftBottomDx == -1) ? _leftTopDX : leftBottomDx;
     _leftBottomDY =
         (leftBottomDy == -1) ? _leftTopDY + _cropSizeHeight : leftBottomDy;
-    print("_leftTopDX: ${_leftTopDX} _leftTopDY: ${_leftTopDY}");
   }
 
   void _setRightTopCropButtonPosition({rightTopDx = -1, rightTopDy = -1}) {
     _rightTopDX = (rightTopDx == -1) ? _leftTopDX + _cropSizeWidth : rightTopDx;
     _rightTopDY = (rightTopDy == -1) ? _leftTopDY : rightTopDy;
-    print("_rightTopDX: ${_rightTopDX} _rightTopDY: ${_rightTopDY}");
   }
 
   void _setRightBottomCropButtonPosition(
@@ -247,7 +241,6 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
         (rightBottomDx == -1) ? _leftTopDX + _cropSizeWidth : rightBottomDx;
     _rightBottomDY =
         (rightBottomDy == -1) ? _rightTopDY + _cropSizeHeight : rightBottomDy;
-    print("_rightTopDX: ${_rightTopDX} _rightTopDY: ${_rightTopDY}");
   }
 
   Widget _showCropImageView(state) {
@@ -642,8 +635,6 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
     var _previousCropWidth = _cropSizeWidth;
     var _previousCropHeight = _cropSizeHeight;
 
-    // print("buttonDrag - _previousLeftTopDX: ${_previousLeftTopDX} _previousLeftTopDY: ${_previousLeftTopDY}");
-
     _leftTopDX = globalPositionDX;
     _leftTopDY = globalPositionDY;
 
@@ -721,7 +712,6 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
           rightBottomDx: _leftTopDX + _cropSizeWidth,
           rightBottomDy: _leftTopDY + _cropSizeHeight);
 
-      // print("buttonDrag - _leftTopDX: ${_leftTopDX} _leftTopDY: ${_leftTopDY}");
     }
   }
 
@@ -740,8 +730,6 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
     var _previousLeftBottomDY = _leftBottomDY;
     var _previousCropWidth = _cropSizeWidth;
     var _previousCropHeight = _cropSizeHeight;
-
-    // print("buttonDrag - _previousLeftBottomDX: ${_previousLeftBottomDX} _previousLeftBottomDY: ${_previousLeftBottomDY}");
 
     _leftBottomDX = globalPositionDX;
     _leftBottomDY = globalPositionDY;
@@ -820,7 +808,6 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
           rightBottomDy: _leftBottomDY);
     }
 
-    // print("buttonDrag - _leftBottomDX: ${_leftBottomDX} _leftBottomDY: ${_leftBottomDY}");
   }
 
   void _manageRightTopButtonDrag(
@@ -837,8 +824,6 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
     var _previousRightTopDY = _rightTopDY;
     var _previousCropWidth = _cropSizeWidth;
     var _previousCropHeight = _cropSizeHeight;
-
-    // print("previous->buttonDrag - _previousRightTopDX: ${_previousRightTopDX} _previousRightTopDY: ${_previousRightTopDY}");
 
     _rightTopDX = globalPositionDX;
     _rightTopDY = globalPositionDY;
@@ -919,7 +904,6 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
           rightBottomDy: _rightTopDY + _cropSizeHeight);
     }
 
-    // print("buttonDrag - _rightBottomDX: ${_rightBottomDX} _rightBottomDY: ${_rightBottomDY}");
   }
 
   void _manageRightBottomButtonDrag(
@@ -927,12 +911,6 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
     var globalPositionDX =
         details.globalPosition.dx - (widget.squareCircleSize / 4);
     var globalPositionDY = details.globalPosition.dy - _topViewHeight;
-
-    /*print("stack: ${}");
-    print("stack bottom: ${_stackGlobalKey.globalPaintBounds!.bottom}");
-
-*/
-    print("_topViewHeight: ${_topViewHeight}");
 
     if ((globalPositionDY + widget.squareCircleSize) >
         _stackGlobalKey.globalPaintBounds!.height) {
@@ -944,14 +922,11 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
     var _previousCropWidth = _cropSizeWidth;
     var _previousCropHeight = _cropSizeHeight;
 
-    // print("previous->buttonDrag - _rightBottomDX: ${_rightBottomDX} _rightBottomDY: ${_rightBottomDY}");
-
     _rightBottomDX = globalPositionDX;
     _rightBottomDY = globalPositionDY;
 
     // this logic is Free ratio
     if (widget.selectedImageRatio == ImageRatio.FREE) {
-      // print("_cropSizeWidth: ${_cropSizeWidth} _minCropSizeWidth: ${_minCropSizeWidth}");
 
       // set crop size width
       if (_previousRightBottomDX > _rightBottomDX) {
@@ -1026,7 +1001,6 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
       _setLeftBottomCropButtonPosition(
           leftBottomDx: _leftTopDX, leftBottomDy: _leftTopDY + _cropSizeHeight);
     }
-    // print("buttonDrag - _rightBottomDX: ${_rightBottomDX} _rightBottomDY: ${_rightBottomDY}");
   }
 
   void _manageSquareDrag(
@@ -1044,7 +1018,6 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
         (globalPositionDY + _cropSizeHeight + (widget.squareCircleSize / 5)) >
             _imageViewMaxHeight) {
       globalPositionDY = _leftTopDY;
-      print("previous");
     }
     _setLeftTopCropButtonPosition(
         leftTopDx: globalPositionDX, leftTopDy: globalPositionDY);

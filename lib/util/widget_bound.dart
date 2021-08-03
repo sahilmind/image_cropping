@@ -11,17 +11,4 @@ extension GlobalKeyExtension on GlobalKey {
       return null;
     }
   }
-
-  Offset? get getOffset {
-    final RenderBox renderObject = currentContext?.findRenderObject() as RenderBox;
-    final positionRed = renderObject.localToGlobal(Offset.zero);
-    return Offset(positionRed.dx, positionRed.dy);
-  }
-
-  Size? get getSize {
-    final RenderBox renderObject = currentContext?.findRenderObject() as RenderBox;
-    final positionRed = renderObject.localToGlobal(Offset.zero);
-    return renderObject.size;
-  }
-
 }

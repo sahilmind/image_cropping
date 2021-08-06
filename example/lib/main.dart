@@ -22,12 +22,22 @@ class MyApp extends StatefulWidget {
   _MyAppState createState() => _MyAppState();
 }
 
-class _MyAppState extends State<MyApp> {
+class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   Uint8List? imageBytes;
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    print('Current state of App :::: $state ');
+  }
+
+
 
   @override
   void initState() {
     super.initState();
+
+    WidgetsBinding.instance!.addObserver(this);
+
   }
 
   @override

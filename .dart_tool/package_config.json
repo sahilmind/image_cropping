@@ -9,7 +9,7 @@
     },
     {
       "name": "async",
-      "rootUri": "file:///Users/mac-0007/Sahil/flutter_versions/flutter/.pub-cache/hosted/pub.dartlang.org/async-2.5.0",
+      "rootUri": "file:///Users/mac-0007/Sahil/flutter_versions/flutter/.pub-cache/hosted/pub.dartlang.org/async-2.8.1",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
@@ -27,7 +27,7 @@
     },
     {
       "name": "charcode",
-      "rootUri": "file:///Users/mac-0007/Sahil/flutter_versions/flutter/.pub-cache/hosted/pub.dartlang.org/charcode-1.2.0",
+      "rootUri": "file:///Users/mac-0007/Sahil/flutter_versions/flutter/.pub-cache/hosted/pub.dartlang.org/charcode-1.3.1",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
@@ -129,7 +129,7 @@
     },
     {
       "name": "meta",
-      "rootUri": "file:///Users/mac-0007/Sahil/flutter_versions/flutter/.pub-cache/hosted/pub.dartlang.org/meta-1.3.0",
+      "rootUri": "file:///Users/mac-0007/Sahil/flutter_versions/flutter/.pub-cache/hosted/pub.dartlang.org/meta-1.7.0",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
@@ -207,7 +207,7 @@
     },
     {
       "name": "source_span",
-      "rootUri": "file:///Users/mac-0007/Sahil/flutter_versions/flutter/.pub-cache/hosted/pub.dartlang.org/source_span-1.8.0",
+      "rootUri": "file:///Users/mac-0007/Sahil/flutter_versions/flutter/.pub-cache/hosted/pub.dartlang.org/source_span-1.8.1",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
@@ -237,7 +237,7 @@
     },
     {
       "name": "test_api",
-      "rootUri": "file:///Users/mac-0007/Sahil/flutter_versions/flutter/.pub-cache/hosted/pub.dartlang.org/test_api-0.2.19",
+      "rootUri": "file:///Users/mac-0007/Sahil/flutter_versions/flutter/.pub-cache/hosted/pub.dartlang.org/test_api-0.4.2",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
@@ -278,7 +278,7 @@
       "languageVersion": "2.12"
     }
   ],
-  "generated": "2021-08-02T05:57:55.559405Z",
+  "generated": "2021-08-06T12:34:42.115660Z",
   "generator": "pub",
-  "generatorVersion": "2.12.3"
+  "generatorVersion": "2.14.0-383.0.dev"
 }

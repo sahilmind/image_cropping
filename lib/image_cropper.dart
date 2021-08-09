@@ -7,7 +7,6 @@ import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:image/image.dart' as Library;
 
 import 'common/app_button.dart';
-import 'constant/color_constant.dart';
 import 'constant/enums.dart';
 import 'util/image_utils.dart';
 import 'util/widget_bound.dart';
@@ -21,10 +20,12 @@ class ImageCropper {
       Function(dynamic) _onImageDoneListener,
       {ImageRatio selectedImageRatio = ImageRatio.FREE,
       bool visibleOtherAspectRatios = true,
-      int squareBorderWidth = 2,
-      Color squareCircleColor = AppColors.theme,
-      int squareCircleSize = 30,
-      int colorForWhiteSpace = 0xffffff,
+      double squareBorderWidth = 2,
+      Color squareCircleColor = Colors.orange,
+      double squareCircleSize = 30,
+      Color defaultTextColor = Colors.black,
+      Color selectedTextColor = Colors.orange,
+      Color colorForWhiteSpace = Colors.white,
       Key? key}) {
     Navigator.of(_context).push(
       MaterialPageRoute(
@@ -37,6 +38,11 @@ class ImageCropper {
           colorForWhiteSpace,
           selectedImageRatio: selectedImageRatio,
           visibleOtherAspectRatios: visibleOtherAspectRatios,
+          squareCircleColor: squareCircleColor,
+          squareBorderWidth: squareBorderWidth,
+          squareCircleSize: squareCircleSize,
+          defaultTextColor: defaultTextColor,
+          selectedTextColor: selectedTextColor,
         ),
       ),
     );
@@ -53,7 +59,9 @@ class ImageCroppperScreen extends StatefulWidget {
   void Function(dynamic) _onImageDoneListener;
   double squareBorderWidth;
   Color squareCircleColor;
-  int _colorForWhiteSpace;
+  Color defaultTextColor;
+  Color selectedTextColor;
+  Color _colorForWhiteSpace;
   double squareCircleSize = 30;
 
   ImageCroppperScreen(
@@ -63,11 +71,13 @@ class ImageCroppperScreen extends StatefulWidget {
       this._onImageEndLoading,
       this._onImageDoneListener,
       this._colorForWhiteSpace,
-      {this.selectedImageRatio = ImageRatio.FREE,
-      this.visibleOtherAspectRatios = true,
-      this.squareBorderWidth = 2,
-      this.squareCircleColor = AppColors.theme,
-      this.squareCircleSize = 30,
+      {required this.selectedImageRatio,
+      required this.visibleOtherAspectRatios,
+      required this.squareBorderWidth,
+      required this.squareCircleColor,
+      required this.defaultTextColor,
+      required this.selectedTextColor,
+      required this.squareCircleSize,
       Key? key})
       : super(key: key);
 
@@ -265,7 +275,7 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
       builder: (BuildContext context, BoxConstraints constraints) {
         _imageViewMaxHeight = constraints.maxHeight;
         return Container(
-          color: AppColors.black,
+          color: widget._colorForWhiteSpace,
           child: Center(
             child: Image.memory(
               _finalImageBytes!,
@@ -371,8 +381,8 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
                 "Free",
                 style: TextStyle(
                   color: (widget.selectedImageRatio == ImageRatio.FREE)
-                      ? AppColors.theme
-                      : AppColors.black,
+                      ? widget.selectedTextColor
+                      : widget.defaultTextColor,
                 ),
               ),
             ),
@@ -387,8 +397,8 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
                 "1:1",
                 style: TextStyle(
                   color: (widget.selectedImageRatio == ImageRatio.RATIO_1_1)
-                      ? AppColors.theme
-                      : AppColors.black,
+                      ? widget.selectedTextColor
+                      : widget.defaultTextColor,
                 ),
               ),
             ),
@@ -403,8 +413,8 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
                 "1:2",
                 style: TextStyle(
                   color: (widget.selectedImageRatio == ImageRatio.RATIO_1_2)
-                      ? AppColors.theme
-                      : AppColors.black,
+                      ? widget.selectedTextColor
+                      : widget.defaultTextColor,
                 ),
               ),
             ),
@@ -419,8 +429,8 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
                 "3:2",
                 style: TextStyle(
                   color: (widget.selectedImageRatio == ImageRatio.RATIO_3_2)
-                      ? AppColors.theme
-                      : AppColors.black,
+                      ? widget.selectedTextColor
+                      : widget.defaultTextColor,
                 ),
               ),
             ),
@@ -435,8 +445,8 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
                 "4:3",
                 style: TextStyle(
                   color: (widget.selectedImageRatio == ImageRatio.RATIO_4_3)
-                      ? AppColors.theme
-                      : AppColors.black,
+                      ? widget.selectedTextColor
+                      : widget.defaultTextColor,
                 ),
               ),
             ),
@@ -451,8 +461,8 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
                 "16:9",
                 style: TextStyle(
                   color: (widget.selectedImageRatio == ImageRatio.RATIO_16_9)
-                      ? AppColors.theme
-                      : AppColors.black,
+                      ? widget.selectedTextColor
+                      : widget.defaultTextColor,
                 ),
               ),
             ),
@@ -501,7 +511,7 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
     if (imageRotation == ImageRotation.LEFT) {
       _currentRotationValue -= 1;
       checkRotationValue();
-      if (_currentRotationDegreeValue != 0) {
+      if (_currentRotationValue != 0) {
         _currentRotationDegreeValue -= 90;
       } else {
         _currentRotationDegreeValue = 270;
@@ -509,7 +519,7 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
     } else {
       _currentRotationValue += 1;
       checkRotationValue();
-      if (_currentRotationDegreeValue != 0) {
+      if (_currentRotationValue != 0) {
         _currentRotationDegreeValue += 90;
       } else {
         _currentRotationDegreeValue = 90;
@@ -519,6 +529,8 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
         Library.copyRotate(_libraryImage, _currentRotationDegreeValue);
     widget._imageBytes =
         Uint8List.fromList(Library.encodeJpg(_libraryImage, quality: 100));
+    _finalImageBytes = widget._imageBytes;
+    _setImageHeightWidth();
     _imageLoadingFinished();
     state(() {});
   }
@@ -1041,7 +1053,7 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
 
     _libraryImage = setWhiteColorInImage(
         _libraryImage,
-        widget._colorForWhiteSpace,
+        widget._colorForWhiteSpace.value,
         _imageWidth,
         _imageHeight,
         imageViewWidth,

@@ -42,21 +42,23 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        color: Colors.green,
-        child: Center(
+    return SafeArea(
+      child: Scaffold(
+        body: Container(
+          color: Colors.grey,
           child: Center(
-            child: InkWell(
-              child: imageBytes == null
-                  ? Icon(
-                      Icons.add_photo_alternate_outlined,
-                      color: Colors.black,
-                    )
-                  : Image.memory(imageBytes!),
-              onTap: () {
-                showImagePickerDialog();
-              },
+            child: Center(
+              child: InkWell(
+                child: imageBytes == null
+                    ? Icon(
+                        Icons.add_photo_alternate_outlined,
+                        color: Colors.black,
+                      )
+                    : Image.memory(imageBytes!),
+                onTap: () {
+                  showImagePickerDialog();
+                },
+              ),
             ),
           ),
         ),

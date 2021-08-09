@@ -34,8 +34,7 @@ Library.Image setWhiteColorInImage(
       (((finalImageHeight * renderedImageHeight) / stackHeight) / 2))
       .toInt();
 
-  var whiteImage =
-  Library.Image(finalImageWidth.toInt(), finalImageHeight.toInt());
+  var whiteImage = Library.Image(finalImageWidth.toInt(), finalImageHeight.toInt());
   whiteImage = whiteImage.fill(colorForWhiteSpace);
 
   var mergedImage = Library.drawImage(whiteImage, image, dstX: centreImageWidthPoint, dstY: centreImageHeightPoint);

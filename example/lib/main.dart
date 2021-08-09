@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:image_cropping/constant/enums.dart';
 import 'package:image_cropping/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -30,14 +31,11 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     print('Current state of App :::: $state ');
   }
 
-
-
   @override
   void initState() {
     super.initState();
 
     WidgetsBinding.instance!.addObserver(this);
-
   }
 
   @override
@@ -133,7 +131,9 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
   void openImagePicker(source) async {
     showLoader();
-    var pickedFile = await ImagePicker().getImage(source: source,);
+    var pickedFile = await ImagePicker().getImage(
+      source: source,
+    );
     imageBytes = await pickedFile?.readAsBytes();
     hideLoader();
 
@@ -144,11 +144,18 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     }, (data) {
       imageBytes = data;
       setState(() {});
-    });
+    },
+        selectedImageRatio: ImageRatio.RATIO_1_1,
+        visibleOtherAspectRatios: true,
+        squareBorderWidth: 2,
+        squareCircleColor: Colors.black,
+        defaultTextColor: Colors.orange,
+        selectedTextColor: Colors.black,
+        colorForWhiteSpace: Colors.grey);
   }
 
   void showLoader() {
-    if(EasyLoading.isShow){
+    if (EasyLoading.isShow) {
       return;
     }
     EasyLoading.show(status: 'Loading...');

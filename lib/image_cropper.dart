@@ -63,6 +63,7 @@ class ImageCroppperScreen extends StatefulWidget {
   Color selectedTextColor;
   Color _colorForWhiteSpace;
   double squareCircleSize = 30;
+  double headerMenuSize = 30;
 
   ImageCroppperScreen(
       this._context,
@@ -138,6 +139,7 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
     _setDeviceOrientation();
     _generateLibraryImage();
     _setDeviceHeightWidth();
+    _setImageRatio(widget.selectedImageRatio);
     _setDefaultButtonPosition();
     _imageLoadingFinished();
     super.initState();
@@ -328,7 +330,7 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
             _imageGlobalKey = GlobalKey();
             changeImageRotation(ImageRotation.LEFT, state);
           },
-          size: widget.squareCircleSize,
+          size: widget.headerMenuSize,
         ),
         appIconButton(
           icon: Icons.rotate_right,
@@ -338,7 +340,7 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
             _imageGlobalKey = GlobalKey();
             changeImageRotation(ImageRotation.RIGHT, state);
           },
-          size: widget.squareCircleSize,
+          size: widget.headerMenuSize,
         ),
         appIconButton(
           icon: Icons.close,
@@ -347,7 +349,7 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
           onPress: () async {
             Navigator.pop(widget._context);
           },
-          size: widget.squareCircleSize,
+          size: widget.headerMenuSize,
         ),
         appIconButton(
           icon: Icons.done,
@@ -358,7 +360,7 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
             _onPressDone(widget._context, _libraryImage, _leftTopDX, _leftTopDY,
                 _cropSizeWidth, _cropSizeHeight, state);
           },
-          size: widget.squareCircleSize,
+          size: widget.headerMenuSize,
         ),
       ],
     );
@@ -476,7 +478,7 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
     );
   }
 
-  void changeImageRatio(state, ImageRatio imageRatio) {
+  void _setImageRatio(ImageRatio imageRatio){
     switch (imageRatio) {
       case ImageRatio.RATIO_1_2:
         _currentRatioWidth = 1;
@@ -503,6 +505,10 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
         (_defaultCropSize * _currentRatioHeight) / _currentRatioWidth;
     widget.selectedImageRatio = imageRatio;
     _setDefaultButtonPosition();
+  }
+
+  void changeImageRatio(state, ImageRatio imageRatio) {
+    _setImageRatio(imageRatio);
     state(() {});
   }
 
@@ -995,6 +1001,7 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
               (_rightTopDX - _cropSizeWidth) <
                   1 // this condition checks the left top crop button is outside the screen.
           ) {
+        print("size: previous default");
         _cropSizeWidth = _previousCropWidth;
         _cropSizeHeight = _previousCropHeight;
         _rightBottomDX = _previousRightBottomDX;

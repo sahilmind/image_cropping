@@ -1,16 +1,34 @@
 # image_cropping
 
 ### You can see that user can add background if they want. 
-![Alt Text](https://github.com/Mindinventory/image_cropping/blob/master/assets/image_plugin_1.gif)
+![Image Plugin](https://github.com/Mindinventory/image_cropping/blob/master/assets/image_plugin_1.gif)
 
 ### User can rotate the image if they want.
-![Alt Text](https://github.com/Mindinventory/image_cropping/blob/master/assets/image_plugin_1.gif)
+![Image Plugin](https://github.com/Mindinventory/image_cropping/blob/master/assets/image_plugin_1.gif)
 
 ### User can change the image ratio if they want.
-![Alt Text](https://github.com/Mindinventory/image_cropping/blob/master/assets/image_plugin_1.gif)
+![Image Plugin](https://github.com/Mindinventory/image_cropping/blob/master/assets/image_plugin_1.gif)
 
 
 ## Usage
+
+### Example
+    `ImageCropper.cropImage(context, imageBytes!, () {
+          showLoader();
+        }, () {
+          hideLoader();
+        }, (data) {
+          imageBytes = data;
+          setState(() {});
+        },
+            selectedImageRatio: ImageRatio.RATIO_1_1,
+            visibleOtherAspectRatios: true,
+            squareBorderWidth: 2,
+            squareCircleColor: Colors.black,
+            defaultTextColor: Colors.orange,
+            selectedTextColor: Colors.black,
+            colorForWhiteSpace: Colors.grey
+			);`
 
 ### Required parameters
 

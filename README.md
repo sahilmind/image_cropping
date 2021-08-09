@@ -1,8 +1,8 @@
 # image_cropping
 
-![Alt Text](https://github.com/Mindinventory/image_cropping/assets/image_plugin_1.gif)
-![Alt Text](https://github.com/Mindinventory/image_cropping/assets/image_plugin_2.gif)
-![Alt Text](https://github.com/Mindinventory/image_cropping/assets/image_plugin_3.gif)
+![Alt Text](https://github.com/Mindinventory/image_cropping/blob/master/assets/image_plugin_1.gif)
+![Alt Text](https://github.com/Mindinventory/image_cropping/blob/master/assets/image_plugin_1.gif)
+![Alt Text](https://github.com/Mindinventory/image_cropping/blob/master/assets/image_plugin_1.gif)
 
 ## Usage
 

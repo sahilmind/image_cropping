@@ -62,18 +62,6 @@
       "languageVersion": "2.12"
     },
     {
-      "name": "ffi",
-      "rootUri": "file:///Users/mac-0007/Sahil/flutter_versions/flutter/.pub-cache/hosted/pub.dartlang.org/ffi-1.1.2",
-      "packageUri": "lib/",
-      "languageVersion": "2.12"
-    },
-    {
-      "name": "file",
-      "rootUri": "file:///Users/mac-0007/Sahil/flutter_versions/flutter/.pub-cache/hosted/pub.dartlang.org/file-6.1.2",
-      "packageUri": "lib/",
-      "languageVersion": "2.12"
-    },
-    {
       "name": "flutter",
       "rootUri": "file:///Users/mac-0007/Sahil/flutter_versions/flutter/packages/flutter",
       "packageUri": "lib/",
@@ -88,30 +76,6 @@
     {
       "name": "flutter_test",
       "rootUri": "file:///Users/mac-0007/Sahil/flutter_versions/flutter/packages/flutter_test",
-      "packageUri": "lib/",
-      "languageVersion": "2.12"
-    },
-    {
-      "name": "get",
-      "rootUri": "file:///Users/mac-0007/Sahil/flutter_versions/flutter/.pub-cache/hosted/pub.dartlang.org/get-4.3.0",
-      "packageUri": "lib/",
-      "languageVersion": "2.12"
-    },
-    {
-      "name": "google_fonts",
-      "rootUri": "file:///Users/mac-0007/Sahil/flutter_versions/flutter/.pub-cache/hosted/pub.dartlang.org/google_fonts-2.1.0",
-      "packageUri": "lib/",
-      "languageVersion": "2.12"
-    },
-    {
-      "name": "http",
-      "rootUri": "file:///Users/mac-0007/Sahil/flutter_versions/flutter/.pub-cache/hosted/pub.dartlang.org/http-0.13.3",
-      "packageUri": "lib/",
-      "languageVersion": "2.12"
-    },
-    {
-      "name": "http_parser",
-      "rootUri": "file:///Users/mac-0007/Sahil/flutter_versions/flutter/.pub-cache/hosted/pub.dartlang.org/http_parser-4.0.0",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
@@ -140,62 +104,8 @@
       "languageVersion": "2.12"
     },
     {
-      "name": "path_provider",
-      "rootUri": "file:///Users/mac-0007/Sahil/flutter_versions/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider-2.0.2",
-      "packageUri": "lib/",
-      "languageVersion": "2.12"
-    },
-    {
-      "name": "path_provider_linux",
-      "rootUri": "file:///Users/mac-0007/Sahil/flutter_versions/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider_linux-2.0.2",
-      "packageUri": "lib/",
-      "languageVersion": "2.12"
-    },
-    {
-      "name": "path_provider_macos",
-      "rootUri": "file:///Users/mac-0007/Sahil/flutter_versions/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider_macos-2.0.2",
-      "packageUri": "lib/",
-      "languageVersion": "2.12"
-    },
-    {
-      "name": "path_provider_platform_interface",
-      "rootUri": "file:///Users/mac-0007/Sahil/flutter_versions/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider_platform_interface-2.0.1",
-      "packageUri": "lib/",
-      "languageVersion": "2.12"
-    },
-    {
-      "name": "path_provider_windows",
-      "rootUri": "file:///Users/mac-0007/Sahil/flutter_versions/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider_windows-2.0.3",
-      "packageUri": "lib/",
-      "languageVersion": "2.12"
-    },
-    {
-      "name": "pedantic",
-      "rootUri": "file:///Users/mac-0007/Sahil/flutter_versions/flutter/.pub-cache/hosted/pub.dartlang.org/pedantic-1.11.1",
-      "packageUri": "lib/",
-      "languageVersion": "2.12"
-    },
-    {
       "name": "petitparser",
       "rootUri": "file:///Users/mac-0007/Sahil/flutter_versions/flutter/.pub-cache/hosted/pub.dartlang.org/petitparser-4.1.0",
-      "packageUri": "lib/",
-      "languageVersion": "2.12"
-    },
-    {
-      "name": "platform",
-      "rootUri": "file:///Users/mac-0007/Sahil/flutter_versions/flutter/.pub-cache/hosted/pub.dartlang.org/platform-3.0.0",
-      "packageUri": "lib/",
-      "languageVersion": "2.12"
-    },
-    {
-      "name": "plugin_platform_interface",
-      "rootUri": "file:///Users/mac-0007/Sahil/flutter_versions/flutter/.pub-cache/hosted/pub.dartlang.org/plugin_platform_interface-2.0.1",
-      "packageUri": "lib/",
-      "languageVersion": "2.12"
-    },
-    {
-      "name": "process",
-      "rootUri": "file:///Users/mac-0007/Sahil/flutter_versions/flutter/.pub-cache/hosted/pub.dartlang.org/process-4.2.3",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
@@ -254,18 +164,6 @@
       "languageVersion": "2.12"
     },
     {
-      "name": "win32",
-      "rootUri": "file:///Users/mac-0007/Sahil/flutter_versions/flutter/.pub-cache/hosted/pub.dartlang.org/win32-2.0.5",
-      "packageUri": "lib/",
-      "languageVersion": "2.12"
-    },
-    {
-      "name": "xdg_directories",
-      "rootUri": "file:///Users/mac-0007/Sahil/flutter_versions/flutter/.pub-cache/hosted/pub.dartlang.org/xdg_directories-0.2.0",
-      "packageUri": "lib/",
-      "languageVersion": "2.12"
-    },
-    {
       "name": "xml",
       "rootUri": "file:///Users/mac-0007/Sahil/flutter_versions/flutter/.pub-cache/hosted/pub.dartlang.org/xml-5.1.2",
       "packageUri": "lib/",
@@ -278,7 +176,7 @@
       "languageVersion": "2.12"
     }
   ],
-  "generated": "2021-08-06T12:34:42.115660Z",
+  "generated": "2021-08-09T09:23:47.907928Z",
   "generator": "pub",
   "generatorVersion": "2.14.0-383.0.dev"
 }

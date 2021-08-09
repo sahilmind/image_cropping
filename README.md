@@ -32,5 +32,5 @@
 
 - **colorForWhiteSpace**: this property contains Color value. By passing this property you can set background color, if screen contains blank space.
 
-**Note**
+**Note**:
 The result returns in Uint8List. so it can be lost later, you are responsible for storing it somewhere permanent (if needed).

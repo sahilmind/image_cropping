@@ -1,6 +1,6 @@
 # image_cropping
 
-This plugin for Android and iOS supports cropping images. It Allow inclusion of background, Rotation of image, Change ratio of selection as per your requirement.
+This plugin supports cropping and rotating images for Android and iOS. It Allow inclusion of background, Rotation of image, changing ratio of selection as per  requirements.
 
 
 ### Allow inclusion of background.

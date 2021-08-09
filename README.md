@@ -13,7 +13,7 @@
 ## Usage
 
 ### Example
-    `ImageCropper.cropImage(context, imageBytes!, () {
+    ImageCropper.cropImage(context, imageBytes!, () {
           showLoader();
         }, () {
           hideLoader();
@@ -28,7 +28,7 @@
             defaultTextColor: Colors.orange,
             selectedTextColor: Colors.black,
             colorForWhiteSpace: Colors.grey
-			);`
+			);
 
 ### Required parameters
 
@@ -60,9 +60,6 @@ this property contains double value. You can change square border width by passi
 
 ##### squareCircleColor:
 this property contains Color value. You can change square circle color by passing this value.
-
-##### squareCircleSize:
-this property contains double value. You can change square circle size by passing this value.
 
 #####  defaultTextColor:
 this property contains Color value. By passing this property you can set aspect ratios color which are unselected.

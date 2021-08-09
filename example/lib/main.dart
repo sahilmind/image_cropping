@@ -142,8 +142,9 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     }, () {
       hideLoader();
     }, (data) {
-      imageBytes = data;
-      setState(() {});
+      setState(() {
+        imageBytes = data;
+      });
     },
         selectedImageRatio: ImageRatio.RATIO_1_1,
         visibleOtherAspectRatios: true,

@@ -1,6 +1,7 @@
 # image_cropping
 
-This plugin for Android and iOS supports cropping images. It Allow inclusion of background, Rotation of image, Change ratio of selection in easy and painless.
+This plugin for Android and iOS supports cropping images. It Allow inclusion of background, Rotation of image, Change ratio of selection as per your requirment.
+
 
 ### Allow inclusion of background.
 ![Image Plugin](https://github.com/Mindinventory/image_cropping/blob/master/assets/image_plugin_1.gif)

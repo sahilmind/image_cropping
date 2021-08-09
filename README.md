@@ -1,34 +1,42 @@
 # image_cropping
 
-### You can see that user can add background if they want. 
+This plugin for Android and iOS supports cropping images. It Allow inclusion of background, Rotation of image, Change ratio of selection in easy and painless.
+
+### Allow inclusion of background.
 ![Image Plugin](https://github.com/Mindinventory/image_cropping/blob/master/assets/image_plugin_1.gif)
 
-### User can rotate the image if they want.
+### Rotation of image.
 ![Image Plugin](https://github.com/Mindinventory/image_cropping/blob/master/assets/image_plugin_2.gif)
 
-### User can change the image ratio if they want.
+### Change ratio of selection.
 ![Image Plugin](https://github.com/Mindinventory/image_cropping/blob/master/assets/image_plugin_3.gif)
 
 
 ## Usage
 
 ### Example
-    ImageCropper.cropImage(context, imageBytes!, () {
-          showLoader();
-        }, () {
-          hideLoader();
-        }, (data) {
+    ImageCropper.cropImage(
+      context,
+      imageBytes!,
+      () {
+        showLoader();
+      },
+      () {
+        hideLoader();
+      },
+      (data) {
+        setState(() {
           imageBytes = data;
-          setState(() {});
-        },
-            selectedImageRatio: ImageRatio.RATIO_1_1,
-            visibleOtherAspectRatios: true,
-            squareBorderWidth: 2,
-            squareCircleColor: Colors.black,
-            defaultTextColor: Colors.orange,
-            selectedTextColor: Colors.black,
-            colorForWhiteSpace: Colors.grey
-			);
+        });
+      },
+      selectedImageRatio: ImageRatio.RATIO_1_1,
+      visibleOtherAspectRatios: true,
+      squareBorderWidth: 2,
+      squareCircleColor: Colors.black,
+      defaultTextColor: Colors.orange,
+      selectedTextColor: Colors.black,
+      colorForWhiteSpace: Colors.grey,
+    );
 
 ### Required parameters
 

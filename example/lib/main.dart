@@ -137,22 +137,28 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     imageBytes = await pickedFile?.readAsBytes();
     hideLoader();
 
-    ImageCropper.cropImage(context, imageBytes!, () {
-      showLoader();
-    }, () {
-      hideLoader();
-    }, (data) {
-      setState(() {
-        imageBytes = data;
-      });
-    },
-        selectedImageRatio: ImageRatio.RATIO_1_1,
-        visibleOtherAspectRatios: true,
-        squareBorderWidth: 2,
-        squareCircleColor: Colors.black,
-        defaultTextColor: Colors.orange,
-        selectedTextColor: Colors.black,
-        colorForWhiteSpace: Colors.grey);
+    ImageCropper.cropImage(
+      context,
+      imageBytes!,
+      () {
+        showLoader();
+      },
+      () {
+        hideLoader();
+      },
+      (data) {
+        setState(() {
+          imageBytes = data;
+        });
+      },
+      selectedImageRatio: ImageRatio.RATIO_1_1,
+      visibleOtherAspectRatios: true,
+      squareBorderWidth: 2,
+      squareCircleColor: Colors.black,
+      defaultTextColor: Colors.orange,
+      selectedTextColor: Colors.black,
+      colorForWhiteSpace: Colors.grey,
+    );
   }
 
   void showLoader() {

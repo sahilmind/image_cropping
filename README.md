@@ -4,10 +4,10 @@
 ![Image Plugin](https://github.com/Mindinventory/image_cropping/blob/master/assets/image_plugin_1.gif)
 
 ### User can rotate the image if they want.
-![Image Plugin](https://github.com/Mindinventory/image_cropping/blob/master/assets/image_plugin_1.gif)
+![Image Plugin](https://github.com/Mindinventory/image_cropping/blob/master/assets/image_plugin_2.gif)
 
 ### User can change the image ratio if they want.
-![Image Plugin](https://github.com/Mindinventory/image_cropping/blob/master/assets/image_plugin_1.gif)
+![Image Plugin](https://github.com/Mindinventory/image_cropping/blob/master/assets/image_plugin_3.gif)
 
 
 ## Usage

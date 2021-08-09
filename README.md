@@ -1,6 +1,6 @@
 # image_cropping
 
-#### Usage
+## Usage
 
 **Required parameters **
 
@@ -14,7 +14,7 @@
 
 **_onImageDoneListener**: this is a callback. you have to override and you will get Uint8List as result.
 
-#### Optional parameters
+## Optional parameters
 
 - **ImageRatio**: this property contains ImageRatio value. You can set the initialized aspect ratio when starting the cropper by passing a value of ImageRatio. default value is `ImageRatio.FREE`
 
@@ -36,5 +36,5 @@
 The result returns in Uint8List. so it can be lost later, you are responsible for storing it somewhere permanent (if needed).
 
 
-#### Let us know!
+# Let us know!
 We’d be really happy if you send us links to your projects where you use our component. Just send an email to sales@mindinventory.com And do let us know if you have any questions or suggestion regarding our work.

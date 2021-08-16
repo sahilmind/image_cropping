@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'dart:typed_data';
-
 import 'package:image/image.dart' as Library;
 
 Library.Image setWhiteColorInImage(

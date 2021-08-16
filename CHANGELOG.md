@@ -1,3 +1,7 @@
+## [0.0.4] - 2021-08-16
+
+* Added multi platform support.
+
 ## [0.0.3] - 2021-08-16
 
 * Compressed Image before rendering.

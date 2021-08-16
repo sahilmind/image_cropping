@@ -5,14 +5,13 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image/image.dart' as Library;
-import 'package:image_cropping/util/compress_format.dart';
 
 import 'common/app_button.dart';
 import 'constant/enums.dart';
 import 'util/image_utils.dart';
 import 'util/widget_bound.dart';
 
-class ImageCropper {
+class ImageCropping {
   static void cropImage(
       BuildContext _context,
       Uint8List _imageBytes,
@@ -51,6 +50,7 @@ class ImageCropper {
 }
 
 class ImageCroppperScreen extends StatefulWidget {
+
   BuildContext _context;
   Uint8List _imageBytes;
   ImageRatio selectedImageRatio = ImageRatio.FREE;
@@ -65,8 +65,6 @@ class ImageCroppperScreen extends StatefulWidget {
   Color _colorForWhiteSpace;
   double squareCircleSize = 30;
   double headerMenuSize = 30;
-
-
 
   ImageCroppperScreen(
       this._context,
@@ -1126,27 +1124,6 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
     Navigator.pop(widget._context);
   }
 
-  /// Compress image from [Uint8List] to [Uint8List].
-  void compressWithList(
-      Uint8List image, {
-        int minWidth = 1920,
-        int minHeight = 1080,
-        int quality = 95,
-        int rotate = 0,
-        int inSampleSize = 1,
-        bool autoCorrectionAngle = true,
-        CompressFormat format = CompressFormat.jpeg,
-        bool keepExif = false,
-      }) {
-
-    /*MethodChannel _channel = const MethodChannel("flutter_image_compress");
-    final result = await _channel.invokeMethod("compress");
-    print(result);*/
-/*
-    return result;*/
-  }
-
 }
 
-int _convertTypeToInt(CompressFormat format) => format.index;
 

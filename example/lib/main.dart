@@ -4,7 +4,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:image_cropping/constant/enums.dart';
-import 'package:image_cropping/image_cropper.dart';
+import 'package:image_cropping/image_cropping.dart';
 import 'package:image_picker/image_picker.dart';
 
 void main() {
@@ -144,11 +144,10 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       maxWidth: 1920,
       maxHeight: 1920
     );
-    var file = File(pickedFile!.path);
-    imageBytes = await pickedFile.readAsBytes();
+    imageBytes = await pickedFile?.readAsBytes();
     hideLoader();
 
-    ImageCropper.cropImage(
+    ImageCropping.cropImage(
       context,
       imageBytes!,
       () {

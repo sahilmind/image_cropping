@@ -1,3 +1,7 @@
+## [0.0.3] - 2021-08-16
+
+* Compressed Image before rendering.
+
 ## [0.0.2] - 2021-08-09
 
 * clarify document.

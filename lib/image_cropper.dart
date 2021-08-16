@@ -1,10 +1,11 @@
+import 'dart:isolate';
 import 'dart:typed_data';
 
-import 'package:flutter/foundation.dart' show compute, kIsWeb;
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:image/image.dart' as Library;
+import 'package:image_cropping/util/compress_format.dart';
 
 import 'common/app_button.dart';
 import 'constant/enums.dart';
@@ -64,6 +65,8 @@ class ImageCroppperScreen extends StatefulWidget {
   Color _colorForWhiteSpace;
   double squareCircleSize = 30;
   double headerMenuSize = 30;
+
+
 
   ImageCroppperScreen(
       this._context,
@@ -133,6 +136,7 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
   double _imageViewMaxHeight = 0;
   double _topViewHeight = 0;
 
+
   @override
   void initState() {
     _imageLoadingStarted();
@@ -189,14 +193,37 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
   }
 
   void _generateLibraryImage() async {
-    widget._imageBytes = await FlutterImageCompress.compressWithList(
-      widget._imageBytes,
-      quality: 25,
-    );
-    _libraryImage = Library.decodeJpg(widget._imageBytes);
+    _libraryImage = await compressImage(widget._imageBytes);
     _finalImageBytes = widget._imageBytes;
     _setImageHeightWidth();
     setState(() {});
+  }
+
+  Future<Library.Image> compressImage(Uint8List uint8list) async {
+    ReceivePort receivePort = ReceivePort();
+    await Isolate.spawn(getCompressedImage, receivePort.sendPort);
+    SendPort sendPort = await receivePort.first;
+    ReceivePort receivePortUint8List = ReceivePort();
+    sendPort.send([uint8list, receivePortUint8List.sendPort]);
+    var listData = await receivePortUint8List.first;
+    return listData;
+  }
+
+  static Future<void> getCompressedImage(SendPort _sendPort) async {
+    ReceivePort receivePort = ReceivePort();
+    _sendPort.send(receivePort.sendPort);
+
+    List data = (await receivePort.first) as List;
+    Uint8List _imageData = data[0];
+    SendPort replyPort = data[1];
+
+    Library.Image image = Library.decodeImage(_imageData)!;
+    if(image.width > 1920) {
+      image = Library.copyResize(image, width: 1920);
+    } else if(image.height > 1920) {
+      image = Library.copyResize(image, height: 1920);
+    }
+    replyPort.send(image);
   }
 
   void _setDeviceHeightWidth() {
@@ -218,8 +245,9 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
 
   void _setTopHeight() {
     if(_topViewHeight==0) {
-      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) async {
         _topViewHeight = _stackGlobalKey.globalPaintBounds?.top ?? 0;
+
       });
     }
   }
@@ -512,7 +540,15 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
     state(() {});
   }
 
-  void changeImageRotation(ImageRotation imageRotation, state) {
+  Future<void> changeImageRotation(ImageRotation imageRotation, state) async {
+
+    var CHANNEL = "flutter_image_compress";
+    var METHOD = "compress";
+
+    MethodChannel _channel = MethodChannel(CHANNEL);
+    final result = await _channel.invokeMethod(METHOD);
+    print(result);
+
     _imageLoadingStarted();
     if (imageRotation == ImageRotation.LEFT) {
       _currentRotationValue -= 1;
@@ -1089,4 +1125,28 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
     widget._onImageDoneListener(_libraryUInt8List);
     Navigator.pop(widget._context);
   }
+
+  /// Compress image from [Uint8List] to [Uint8List].
+  void compressWithList(
+      Uint8List image, {
+        int minWidth = 1920,
+        int minHeight = 1080,
+        int quality = 95,
+        int rotate = 0,
+        int inSampleSize = 1,
+        bool autoCorrectionAngle = true,
+        CompressFormat format = CompressFormat.jpeg,
+        bool keepExif = false,
+      }) {
+
+    /*MethodChannel _channel = const MethodChannel("flutter_image_compress");
+    final result = await _channel.invokeMethod("compress");
+    print(result);*/
+/*
+    return result;*/
+  }
+
 }
+
+int _convertTypeToInt(CompressFormat format) => format.index;
+

@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
@@ -64,7 +65,14 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     );
   }
 
-  void showImagePickerDialog() {
+  Future<void> showImagePickerDialog() async {
+    /*var CHANNEL = "flutter_image_compress";
+    var METHOD = "compress";
+
+    MethodChannel _channel = MethodChannel(CHANNEL);
+    final result = await _channel.invokeMethod(METHOD);
+    print(result);
+    return;*/
     Dialog dialog = Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
       //this right here
@@ -133,8 +141,11 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     showLoader();
     var pickedFile = await ImagePicker().getImage(
       source: source,
+      maxWidth: 1920,
+      maxHeight: 1920
     );
-    imageBytes = await pickedFile?.readAsBytes();
+    var file = File(pickedFile!.path);
+    imageBytes = await pickedFile.readAsBytes();
     hideLoader();
 
     ImageCropper.cropImage(
@@ -157,7 +168,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       squareCircleColor: Colors.black,
       defaultTextColor: Colors.orange,
       selectedTextColor: Colors.black,
-      colorForWhiteSpace: Colors.grey,
+      colorForWhiteSpace: Colors.white,
     );
   }
 

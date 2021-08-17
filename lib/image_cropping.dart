@@ -56,43 +56,43 @@ class ImageCroppperScreen extends StatefulWidget {
   /// context is use to get height & width of screen and pop this screen.
   BuildContext _context;
 
-  /// image bytes is use to draw image in device and if image not fits in device screen then we manage background color(if you have passed colorForWhiteSpace or else White background) in image cropping screen.
+  /// [_imageBytes] is use to draw image in device and if image not fits in device screen then we manage background color(if you have passed colorForWhiteSpace or else White background) in image cropping screen.
   Uint8List _imageBytes;
 
-  /// this property contains ImageRatio value. You can set the initialized a  spect ratio when starting the cropper by passing a value of ImageRatio. default value is `ImageRatio.FREE`
+  /// This property contains ImageRatio value. You can set the initialized a  spect ratio when starting the cropper by passing a value of ImageRatio. default value is `ImageRatio.FREE`
   ImageRatio selectedImageRatio = ImageRatio.FREE;
 
-  /// this property contains boolean value. If this properties is true then it shows all other aspect ratios in cropping screen. default value is `true`.
+  /// This property contains boolean value. If this properties is true then it shows all other aspect ratios in cropping screen. default value is `true`.
   bool visibleOtherAspectRatios = true;
 
-  /// this is a callback. you have to override and show dialog or etc when image cropping is in loading state.
+  /// This is a callback. you have to override and show dialog or etc when image cropping is in loading state.
   void Function() _onImageStartLoading;
 
-  /// this is a callback. you have to override and hide dialog or etc when image cropping is ready to show result in cropping screen.
+  /// This is a callback. you have to override and hide dialog or etc when image cropping is ready to show result in cropping screen.
   void Function() _onImageEndLoading;
 
-  /// this is a callback. you have to override and you will get Uint8List as result.
+  /// This is a callback. you have to override and you will get Uint8List as result.
   void Function(dynamic) _onImageDoneListener;
 
-  /// this property contains double value. You can change square border width by passing this value.
+  /// This property contains double value. You can change square border width by passing this value.
   double squareBorderWidth;
 
-  /// this property contains Color value. You can change square circle color by passing this value.
+  /// This property contains Color value. You can change square circle color by passing this value.
   Color squareCircleColor;
 
-  /// this property contains Color value. By passing this property you can set aspect ratios color which are unselected.
+  /// This property contains Color value. By passing this property you can set aspect ratios color which are unselected.
   Color defaultTextColor;
 
-  /// this property contains Color value. By passing this property you can set aspect ratios color which is selected.
+  /// This property contains Color value. By passing this property you can set aspect ratios color which is selected.
   Color selectedTextColor;
 
-  /// this property contains Color value. By passing this property you can set background color, if screen contains blank space.
+  /// This property contains Color value. By passing this property you can set background color, if screen contains blank space.
   Color _colorForWhiteSpace;
 
-  /// this property contains Square circle(dot) size
+  /// This property contains Square circle(dot) size
   double squareCircleSize = 30;
 
-  /// this property contains Header menu icon size
+  /// This property contains Header menu icon size
   double headerMenuSize = 30;
 
   ImageCroppperScreen(
@@ -169,22 +169,22 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
     /// Show Image Loading.
     _imageLoadingStarted();
 
-    /// set device orientation
+    /// Set device orientation
     _setDeviceOrientation();
 
     /// Generate Image from image bytes.
     _generateLibraryImage();
 
-    /// set device height & width from image.
+    /// Set device height & width from image.
     _setDeviceHeightWidth();
 
-    /// set Image ratio for cropping the image.
+    /// Set Image ratio for cropping the image.
     _setImageRatio(widget.selectedImageRatio);
 
-    /// set default button position (left, right, top, bottom) in center of the screen.
+    /// Set default button position (left, right, top, bottom) in center of the screen.
     _setDefaultButtonPosition();
 
-    /// image loading finished.
+    /// Image loading finished.
     _imageLoadingFinished();
 
     super.initState();
@@ -192,7 +192,7 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
 
   @override
   Widget build(BuildContext context) {
-    /// wait till image creates from image bytes.
+    /// Wait till image creates from image bytes.
     if (_finalImageBytes != null) {
       return StatefulBuilder(
         builder: (context, state) {
@@ -218,20 +218,24 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
     }
   }
 
+  /// callback for image loading started.
   void _setDeviceOrientation() {
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);
   }
 
+  /// callback for image loading started.
   void _imageLoadingStarted() {
     widget._onImageStartLoading();
   }
 
+  /// callback for image loading finished.
   void _imageLoadingFinished() {
     widget._onImageEndLoading();
   }
 
+  /// Generate image from image bytes.
   void _generateLibraryImage() async {
     _libraryImage = await compressImage(widget._imageBytes);
     _finalImageBytes = widget._imageBytes;
@@ -239,6 +243,7 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
     setState(() {});
   }
 
+  /// Compress the image in isolate.
   Future<Library.Image> compressImage(Uint8List uint8list) async {
     ReceivePort receivePort = ReceivePort();
     await Isolate.spawn(getCompressedImage, receivePort.sendPort);
@@ -249,6 +254,7 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
     return listData;
   }
 
+  /// Resize image pass result to sender.
   static Future<void> getCompressedImage(SendPort _sendPort) async {
     ReceivePort receivePort = ReceivePort();
     _sendPort.send(receivePort.sendPort);
@@ -266,16 +272,19 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
     replyPort.send(image);
   }
 
+  /// set device width & height
   void _setDeviceHeightWidth() {
     _deviceWidth = MediaQuery.of(widget._context).size.width;
     _deviceHeight = MediaQuery.of(widget._context).size.height;
   }
 
+  /// set image width & height.
   void _setImageHeightWidth() {
     _imageWidth = _libraryImage.width.toDouble();
     _imageHeight = _libraryImage.height.toDouble();
   }
 
+  /// set position of all dot buttons.
   void _setDefaultButtonPosition() {
     _setLeftTopCropButtonPosition();
     _setLeftBottomCropButtonPosition();
@@ -283,6 +292,7 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
     _setRightBottomCropButtonPosition();
   }
 
+  /// set topview height(means screen top point to stack starting point height.)
   void _setTopHeight() {
     if (_topViewHeight == 0) {
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) async {
@@ -291,6 +301,7 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
     }
   }
 
+  /// set left top crop button on screen.
   void _setLeftTopCropButtonPosition({leftTopDx = -1, leftTopDy = -1}) {
     _leftTopDX = (leftTopDx == -1)
         ? (_deviceWidth / 2) - (_cropSizeWidth / 2)
@@ -299,6 +310,7 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
         (leftTopDy == -1) ? (_deviceHeight / 2) - _cropSizeHeight : leftTopDy;
   }
 
+  /// set left bottom crop button on screen.
   void _setLeftBottomCropButtonPosition(
       {leftBottomDx = -1, leftBottomDy = -1}) {
     _leftBottomDX = (leftBottomDx == -1) ? _leftTopDX : leftBottomDx;
@@ -306,11 +318,13 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
         (leftBottomDy == -1) ? _leftTopDY + _cropSizeHeight : leftBottomDy;
   }
 
+  /// set right top crop button on screen.
   void _setRightTopCropButtonPosition({rightTopDx = -1, rightTopDy = -1}) {
     _rightTopDX = (rightTopDx == -1) ? _leftTopDX + _cropSizeWidth : rightTopDx;
     _rightTopDY = (rightTopDy == -1) ? _leftTopDY : rightTopDy;
   }
 
+  /// set right bottom crop button on screen.
   void _setRightBottomCropButtonPosition(
       {rightBottomDx = -1, rightBottomDy = -1}) {
     _rightBottomDX =
@@ -319,26 +333,35 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
         (rightBottomDy == -1) ? _rightTopDY + _cropSizeHeight : rightBottomDy;
   }
 
+  /// Showing stack in screen.
   Widget _showCropImageView(state) {
     return Expanded(
       child: getStackWidget(state),
     );
   }
 
+  /// showing image & buttons in screen.
   Widget getStackWidget(state) {
     return Stack(
       key: _stackGlobalKey,
       children: [
+        /// Showing image in screen
         loadImage(),
+        /// Showing border of crop view.
         showImageCropButtonsBorder(state),
+        /// Displaying a dot button in left top.
         showImageCropLeftTopButton(state),
+        /// Displaying a dot button in left bottom.
         showImageCropLeftBottomButton(state),
+        /// Displaying a dot button in right top.
         showImageCropRightTopButton(state),
+        /// Displaying a dot button in right bottom.
         showImageCropRightBottomButton(state),
       ],
     );
   }
 
+  /// Showing image in screen
   Widget loadImage() {
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
@@ -357,6 +380,7 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
     );
   }
 
+  /// Showing border of crop view.
   Widget showImageCropButtonsBorder(state) {
     return Positioned(
       left: _leftTopDX + (widget.squareCircleSize / 4),
@@ -383,12 +407,14 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
     );
   }
 
+  /// Showing buttons of crop view.
   Widget _showCroppingButtons(state) {
     return Row(
       key: _cropMenuGlobalKey,
       mainAxisAlignment:
           (kIsWeb) ? MainAxisAlignment.end : MainAxisAlignment.spaceAround,
       children: [
+        /// this [appIconButton] icon for rotate the image on left side.
         appIconButton(
           icon: Icons.rotate_left,
           background: Colors.transparent,
@@ -399,6 +425,7 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
           },
           size: widget.headerMenuSize,
         ),
+        /// this [appIconButton] icon for rotate the image on right side.
         appIconButton(
           icon: Icons.rotate_right,
           background: Colors.transparent,
@@ -409,6 +436,7 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
           },
           size: widget.headerMenuSize,
         ),
+        /// this [appIconButton] icon for close the cropping screen.
         appIconButton(
           icon: Icons.close,
           background: Colors.transparent,
@@ -418,12 +446,13 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
           },
           size: widget.headerMenuSize,
         ),
+        /// this [appIconButton] icon for cropping is done.
         appIconButton(
           icon: Icons.done,
           background: Colors.transparent,
           iconColor: Colors.green,
           onPress: () async {
-            // _imageBytes = Uint8List.fromList(Library.encodeJpg(_libraryImage, quality: 100));
+            /// crop is done, and start process for cropping the image from screen.
             _onPressDone(widget._context, _libraryImage, _leftTopDX, _leftTopDY,
                 _cropSizeWidth, _cropSizeHeight, state);
           },
@@ -433,7 +462,9 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
     );
   }
 
+  /// Show all crop ratios.
   Widget _showCropImageRatios(state) {
+    /// If widget.visibleOtherAspectRatios is true then ratio list will be visible or else it will hide.
     return Visibility(
       visible: widget.visibleOtherAspectRatios,
       child: Padding(
@@ -442,6 +473,8 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
           mainAxisAlignment:
               (kIsWeb) ? MainAxisAlignment.end : MainAxisAlignment.spaceAround,
           children: [
+
+            /// This is for free cropping ratio.
             InkWell(
               onTap: () {
                 changeImageRatio(state, ImageRatio.FREE);
@@ -455,9 +488,12 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
                 ),
               ),
             ),
+
             SizedBox(
               width: (kIsWeb) ? 20 : 0,
             ),
+
+            /// This is for 1:1 cropping ratio.
             InkWell(
               onTap: () {
                 changeImageRatio(state, ImageRatio.RATIO_1_1);
@@ -471,9 +507,12 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
                 ),
               ),
             ),
+
             SizedBox(
               width: (kIsWeb) ? 20 : 0,
             ),
+
+            /// This is for 1:2 cropping ratio.
             InkWell(
               onTap: () {
                 changeImageRatio(state, ImageRatio.RATIO_1_2);
@@ -487,9 +526,12 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
                 ),
               ),
             ),
+
             SizedBox(
               width: (kIsWeb) ? 20 : 0,
             ),
+
+            /// This is for 3:2 cropping ratio.
             InkWell(
               onTap: () {
                 changeImageRatio(state, ImageRatio.RATIO_3_2);
@@ -503,9 +545,12 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
                 ),
               ),
             ),
+
             SizedBox(
               width: (kIsWeb) ? 20 : 0,
             ),
+
+            /// This is for 4:3 cropping ratio.
             InkWell(
               onTap: () {
                 changeImageRatio(state, ImageRatio.RATIO_4_3);
@@ -519,9 +564,12 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
                 ),
               ),
             ),
+
             SizedBox(
               width: (kIsWeb) ? 20 : 0,
             ),
+
+            /// This is for 16:9 cropping ratio.
             InkWell(
               onTap: () {
                 changeImageRatio(state, ImageRatio.RATIO_16_9);
@@ -545,6 +593,7 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
     );
   }
 
+  /// Change crop ratio width & height and also change the crop size based on selected image ratio.
   void _setImageRatio(ImageRatio imageRatio) {
     switch (imageRatio) {
       case ImageRatio.RATIO_1_2:
@@ -574,19 +623,14 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
     _setDefaultButtonPosition();
   }
 
+  /// Set crop ratio and again render the screen.
   void changeImageRatio(state, ImageRatio imageRatio) {
     _setImageRatio(imageRatio);
     state(() {});
   }
 
+  /// Change the image rotation.
   Future<void> changeImageRotation(ImageRotation imageRotation, state) async {
-    var CHANNEL = "flutter_image_compress";
-    var METHOD = "compress";
-
-    MethodChannel _channel = MethodChannel(CHANNEL);
-    final result = await _channel.invokeMethod(METHOD);
-    print(result);
-
     _imageLoadingStarted();
     if (imageRotation == ImageRotation.LEFT) {
       _currentRotationValue -= 1;
@@ -615,12 +659,14 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
     state(() {});
   }
 
+  /// Check rotation value if it is greater or lesser than 3 then set it to 0.
   void checkRotationValue() {
     if (_currentRotationValue > 3 || _currentRotationValue < -3) {
       _currentRotationValue = 0;
     }
   }
 
+  /// Show left top dot button at particular position.
   Widget showImageCropLeftTopButton(state) {
     return Positioned(
       left: _leftTopDX,
@@ -639,6 +685,7 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
     );
   }
 
+  /// Show left bottom dot button at particular position.
   Widget showImageCropLeftBottomButton(state) {
     return Positioned(
       left: _leftBottomDX,
@@ -657,6 +704,7 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
     );
   }
 
+  /// Show right top dot button at particular position.
   Widget showImageCropRightTopButton(state) {
     return Positioned(
       left: _rightTopDX,
@@ -675,6 +723,7 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
     );
   }
 
+  /// Show right bottom dot button at particular position.
   Widget showImageCropRightBottomButton(state) {
     return Positioned(
       left: _rightBottomDX,
@@ -693,6 +742,7 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
     );
   }
 
+  /// Update button or square position on drag and update the UI.
   void _buttonDrag(
       state, DragUpdateDetails details, DragDirection dragDirection) {
     if (dragDirection == DragDirection.LEFT_TOP) {
@@ -709,6 +759,7 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
     state(() {});
   }
 
+  /// Manage left top button on drag.
   void _manageLeftTopButtonDrag(
       state, DragUpdateDetails details, DragDirection dragDirection) {
     var globalPositionDX =
@@ -803,6 +854,7 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
     }
   }
 
+  /// Manage left bottom button on drag.
   void _manageLeftBottomButtonDrag(
       state, DragUpdateDetails details, DragDirection dragDirection) {
     var globalPositionDX =
@@ -897,6 +949,7 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
     }
   }
 
+  /// Manage right top button on drag.
   void _manageRightTopButtonDrag(
       state, DragUpdateDetails details, DragDirection dragDirection) {
     var globalPositionDX =
@@ -992,6 +1045,7 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
     }
   }
 
+  /// Manage right bottom button on drag.
   void _manageRightBottomButtonDrag(
       state, DragUpdateDetails details, DragDirection dragDirection) {
     var globalPositionDX =
@@ -1089,6 +1143,7 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
     }
   }
 
+  /// Manage square on drag.
   void _manageSquareDrag(
       state, DragUpdateDetails details, DragDirection dragDirection) {
     var globalPositionDX = details.globalPosition.dx - _startedDX;
@@ -1116,6 +1171,7 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
         rightBottomDy: _rightTopDY + _cropSizeHeight);
   }
 
+  // crop is done, now process for cropping the image.
   void _onPressDone(BuildContext context, Library.Image sourceImage, double x,
       double y, double width, double height, state) {
     _imageLoadingStarted();

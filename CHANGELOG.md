@@ -1,3 +1,7 @@
+## [0.0.5] - 2021-08-17
+
+* Clarified dart code with comments.
+
 ## [0.0.4] - 2021-08-16
 
 * Added multi platform support.

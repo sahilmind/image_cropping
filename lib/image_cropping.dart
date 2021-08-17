@@ -12,7 +12,6 @@ import 'util/image_utils.dart';
 import 'util/widget_bound.dart';
 
 class ImageCropping {
-
   static void cropImage(
       BuildContext _context,
       Uint8List _imageBytes,
@@ -52,7 +51,6 @@ class ImageCropping {
 }
 
 class ImageCroppperScreen extends StatefulWidget {
-
   /// context is use to get height & width of screen and pop this screen.
   BuildContext _context;
 
@@ -117,7 +115,6 @@ class ImageCroppperScreen extends StatefulWidget {
 }
 
 class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
-
   double _leftTopDX = 0;
   double _leftTopDY = 0;
 
@@ -347,14 +344,19 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
       children: [
         /// Showing image in screen
         loadImage(),
+
         /// Showing border of crop view.
         showImageCropButtonsBorder(state),
+
         /// Displaying a dot button in left top.
         showImageCropLeftTopButton(state),
+
         /// Displaying a dot button in left bottom.
         showImageCropLeftBottomButton(state),
+
         /// Displaying a dot button in right top.
         showImageCropRightTopButton(state),
+
         /// Displaying a dot button in right bottom.
         showImageCropRightBottomButton(state),
       ],
@@ -425,6 +427,7 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
           },
           size: widget.headerMenuSize,
         ),
+
         /// this [appIconButton] icon for rotate the image on right side.
         appIconButton(
           icon: Icons.rotate_right,
@@ -436,6 +439,7 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
           },
           size: widget.headerMenuSize,
         ),
+
         /// this [appIconButton] icon for close the cropping screen.
         appIconButton(
           icon: Icons.close,
@@ -446,6 +450,7 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
           },
           size: widget.headerMenuSize,
         ),
+
         /// this [appIconButton] icon for cropping is done.
         appIconButton(
           icon: Icons.done,
@@ -473,7 +478,6 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
           mainAxisAlignment:
               (kIsWeb) ? MainAxisAlignment.end : MainAxisAlignment.spaceAround,
           children: [
-
             /// This is for free cropping ratio.
             InkWell(
               onTap: () {

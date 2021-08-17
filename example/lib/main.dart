@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
@@ -139,11 +138,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
   void openImagePicker(source) async {
     showLoader();
-    var pickedFile = await ImagePicker().getImage(
-      source: source,
-      maxWidth: 1920,
-      maxHeight: 1920
-    );
+    var pickedFile = await ImagePicker()
+        .getImage(source: source, maxWidth: 1920, maxHeight: 1920);
     imageBytes = await pickedFile?.readAsBytes();
     hideLoader();
 
@@ -157,9 +153,11 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         hideLoader();
       },
       (data) {
-        setState(() {
-          imageBytes = data;
-        });
+        setState(
+          () {
+            imageBytes = data;
+          },
+        );
       },
       selectedImageRatio: ImageRatio.RATIO_1_1,
       visibleOtherAspectRatios: true,

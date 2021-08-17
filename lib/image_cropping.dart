@@ -12,6 +12,7 @@ import 'util/image_utils.dart';
 import 'util/widget_bound.dart';
 
 class ImageCropping {
+
   static void cropImage(
       BuildContext _context,
       Uint8List _imageBytes,
@@ -27,6 +28,7 @@ class ImageCropping {
       Color selectedTextColor = Colors.orange,
       Color colorForWhiteSpace = Colors.white,
       Key? key}) {
+    /// Here, we are pushing a image cropping screen.
     Navigator.of(_context).push(
       MaterialPageRoute(
         builder: (_context) => ImageCroppperScreen(
@@ -51,19 +53,46 @@ class ImageCropping {
 
 class ImageCroppperScreen extends StatefulWidget {
 
+  /// context is use to get height & width of screen and pop this screen.
   BuildContext _context;
+
+  /// image bytes is use to draw image in device and if image not fits in device screen then we manage background color(if you have passed colorForWhiteSpace or else White background) in image cropping screen.
   Uint8List _imageBytes;
+
+  /// this property contains ImageRatio value. You can set the initialized a  spect ratio when starting the cropper by passing a value of ImageRatio. default value is `ImageRatio.FREE`
   ImageRatio selectedImageRatio = ImageRatio.FREE;
+
+  /// this property contains boolean value. If this properties is true then it shows all other aspect ratios in cropping screen. default value is `true`.
   bool visibleOtherAspectRatios = true;
+
+  /// this is a callback. you have to override and show dialog or etc when image cropping is in loading state.
   void Function() _onImageStartLoading;
+
+  /// this is a callback. you have to override and hide dialog or etc when image cropping is ready to show result in cropping screen.
   void Function() _onImageEndLoading;
+
+  /// this is a callback. you have to override and you will get Uint8List as result.
   void Function(dynamic) _onImageDoneListener;
+
+  /// this property contains double value. You can change square border width by passing this value.
   double squareBorderWidth;
+
+  /// this property contains Color value. You can change square circle color by passing this value.
   Color squareCircleColor;
+
+  /// this property contains Color value. By passing this property you can set aspect ratios color which are unselected.
   Color defaultTextColor;
+
+  /// this property contains Color value. By passing this property you can set aspect ratios color which is selected.
   Color selectedTextColor;
+
+  /// this property contains Color value. By passing this property you can set background color, if screen contains blank space.
   Color _colorForWhiteSpace;
+
+  /// this property contains Square circle(dot) size
   double squareCircleSize = 30;
+
+  /// this property contains Header menu icon size
   double headerMenuSize = 30;
 
   ImageCroppperScreen(
@@ -88,11 +117,9 @@ class ImageCroppperScreen extends StatefulWidget {
 }
 
 class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
+
   double _leftTopDX = 0;
   double _leftTopDY = 0;
-
-  double _startedDX = 0;
-  double _startedDY = 0;
 
   double _leftBottomDX = 0;
   double _leftBottomDY = 0;
@@ -102,6 +129,9 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
 
   double _rightBottomDX = 0;
   double _rightBottomDY = 0;
+
+  double _startedDX = 0;
+  double _startedDY = 0;
 
   double _imageWidth = 0;
   double _imageHeight = 0;
@@ -134,24 +164,36 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
   double _imageViewMaxHeight = 0;
   double _topViewHeight = 0;
 
-
   @override
   void initState() {
+    /// Show Image Loading.
     _imageLoadingStarted();
+
+    /// set device orientation
     _setDeviceOrientation();
+
+    /// Generate Image from image bytes.
     _generateLibraryImage();
+
+    /// set device height & width from image.
     _setDeviceHeightWidth();
+
+    /// set Image ratio for cropping the image.
     _setImageRatio(widget.selectedImageRatio);
+
+    /// set default button position (left, right, top, bottom) in center of the screen.
     _setDefaultButtonPosition();
+
+    /// image loading finished.
     _imageLoadingFinished();
+
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    // set Image width and height.
-    // show data.ggssv
-    if(_finalImageBytes!=null) {
+    /// wait till image creates from image bytes.
+    if (_finalImageBytes != null) {
       return StatefulBuilder(
         builder: (context, state) {
           _setTopHeight();
@@ -216,9 +258,9 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
     SendPort replyPort = data[1];
 
     Library.Image image = Library.decodeImage(_imageData)!;
-    if(image.width > 1920) {
+    if (image.width > 1920) {
       image = Library.copyResize(image, width: 1920);
-    } else if(image.height > 1920) {
+    } else if (image.height > 1920) {
       image = Library.copyResize(image, height: 1920);
     }
     replyPort.send(image);
@@ -242,10 +284,9 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
   }
 
   void _setTopHeight() {
-    if(_topViewHeight==0) {
+    if (_topViewHeight == 0) {
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) async {
         _topViewHeight = _stackGlobalKey.globalPaintBounds?.top ?? 0;
-
       });
     }
   }
@@ -504,7 +545,7 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
     );
   }
 
-  void _setImageRatio(ImageRatio imageRatio){
+  void _setImageRatio(ImageRatio imageRatio) {
     switch (imageRatio) {
       case ImageRatio.RATIO_1_2:
         _currentRatioWidth = 1;
@@ -539,7 +580,6 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
   }
 
   Future<void> changeImageRotation(ImageRotation imageRotation, state) async {
-
     var CHANNEL = "flutter_image_compress";
     var METHOD = "compress";
 
@@ -760,7 +800,6 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
       _setRightBottomCropButtonPosition(
           rightBottomDx: _leftTopDX + _cropSizeWidth,
           rightBottomDy: _leftTopDY + _cropSizeHeight);
-
     }
   }
 
@@ -856,7 +895,6 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
           rightBottomDx: _leftBottomDX + _cropSizeWidth,
           rightBottomDy: _leftBottomDY);
     }
-
   }
 
   void _manageRightTopButtonDrag(
@@ -952,7 +990,6 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
           rightBottomDx: _rightTopDX,
           rightBottomDy: _rightTopDY + _cropSizeHeight);
     }
-
   }
 
   void _manageRightBottomButtonDrag(
@@ -976,7 +1013,6 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
 
     // this logic is Free ratio
     if (widget.selectedImageRatio == ImageRatio.FREE) {
-
       // set crop size width
       if (_previousRightBottomDX > _rightBottomDX) {
         // moving to left side
@@ -1123,7 +1159,4 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
     widget._onImageDoneListener(_libraryUInt8List);
     Navigator.pop(widget._context);
   }
-
 }
-
-

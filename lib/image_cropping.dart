@@ -1,4 +1,3 @@
-import 'dart:isolate';
 import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart' show kIsWeb;
@@ -30,7 +29,7 @@ class ImageCropping {
     /// Here, we are pushing a image cropping screen.
     Navigator.of(_context).push(
       MaterialPageRoute(
-        builder: (_context) => ImageCroppperScreen(
+        builder: (_context) => ImageCropppingScreen(
           _context,
           _imageBytes,
           _onImageStartLoading,
@@ -50,7 +49,7 @@ class ImageCropping {
   }
 }
 
-class ImageCroppperScreen extends StatefulWidget {
+class ImageCropppingScreen extends StatefulWidget {
   /// context is use to get height & width of screen and pop this screen.
   BuildContext _context;
 
@@ -93,7 +92,7 @@ class ImageCroppperScreen extends StatefulWidget {
   /// This property contains Header menu icon size
   double headerMenuSize = 30;
 
-  ImageCroppperScreen(
+  ImageCropppingScreen(
       this._context,
       this._imageBytes,
       this._onImageStartLoading,
@@ -111,10 +110,10 @@ class ImageCroppperScreen extends StatefulWidget {
       : super(key: key);
 
   @override
-  _ImageCroppperScreenState createState() => _ImageCroppperScreenState();
+  _ImageCroppingScreenState createState() => _ImageCroppingScreenState();
 }
 
-class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
+class _ImageCroppingScreenState extends State<ImageCropppingScreen> {
   double _leftTopDX = 0;
   double _leftTopDY = 0;
 
@@ -234,39 +233,22 @@ class _ImageCroppperScreenState extends State<ImageCroppperScreen> {
 
   /// Generate image from image bytes.
   void _generateLibraryImage() async {
-    _libraryImage = await compressImage(widget._imageBytes);
+    // _libraryImage = await compressImage(widget._imageBytes);
+    _libraryImage = await getCompressedImage(widget._imageBytes);
     _finalImageBytes = widget._imageBytes;
     _setImageHeightWidth();
     setState(() {});
   }
 
-  /// Compress the image in isolate.
-  Future<Library.Image> compressImage(Uint8List uint8list) async {
-    ReceivePort receivePort = ReceivePort();
-    await Isolate.spawn(getCompressedImage, receivePort.sendPort);
-    SendPort sendPort = await receivePort.first;
-    ReceivePort receivePortUint8List = ReceivePort();
-    sendPort.send([uint8list, receivePortUint8List.sendPort]);
-    var listData = await receivePortUint8List.first;
-    return listData;
-  }
-
-  /// Resize image pass result to sender.
-  static Future<void> getCompressedImage(SendPort _sendPort) async {
-    ReceivePort receivePort = ReceivePort();
-    _sendPort.send(receivePort.sendPort);
-
-    List data = (await receivePort.first) as List;
-    Uint8List _imageData = data[0];
-    SendPort replyPort = data[1];
-
+  /// Resize image and return the result.
+  static Library.Image getCompressedImage(Uint8List _imageData) {
     Library.Image image = Library.decodeImage(_imageData)!;
     if (image.width > 1920) {
       image = Library.copyResize(image, width: 1920);
     } else if (image.height > 1920) {
       image = Library.copyResize(image, height: 1920);
     }
-    replyPort.send(image);
+    return image;
   }
 
   /// set device width & height

@@ -65,13 +65,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   }
 
   Future<void> showImagePickerDialog() async {
-    /*var CHANNEL = "flutter_image_compress";
-    var METHOD = "compress";
-
-    MethodChannel _channel = MethodChannel(CHANNEL);
-    final result = await _channel.invokeMethod(METHOD);
-    print(result);
-    return;*/
     Dialog dialog = Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
       //this right here

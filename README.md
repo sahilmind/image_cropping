@@ -1,7 +1,7 @@
 # image_cropping
 
 
-<a href="https://pub.dev/packages/image_cropping"><img src="https://img.shields.io/pub/v/image_cropping.svg?label=image_cropping&color=blue" alt="image_cropping version"></a>
+<a href="https://pub.dev/packages/image_cropping"><img src="https://img.shields.io/pub/v/image_cropping.svg?label=image_cropping" alt="image_cropping version"></a>
 <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/license-MIT-purple.svg" alt="MIT License"></a>
 
 <a href="https://developer.android.com" style="pointer-events: stroke;" target="_blank">

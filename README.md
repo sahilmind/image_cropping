@@ -2,7 +2,6 @@
 
 
 <a href="https://pub.dev/packages/image_cropping"><img src="https://img.shields.io/pub/v/image_cropping.svg?label=image_cropping" alt="image_cropping version"></a>
-<a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/license-MIT-purple.svg" alt="MIT License"></a>
 <a href="https://github.com/Mindinventory/image_cropping"><img src="https://img.shields.io/github/stars/Mindinventory/image_cropping?style=social" alt="MIT License"></a>
 <a href="https://developer.android.com" style="pointer-events: stroke;" target="_blank">
 <img src="https://img.shields.io/badge/platform-android-blue">
@@ -22,6 +21,7 @@
 <a href="" style="pointer-events: stroke;" target="_blank">
 <img src="https://img.shields.io/badge/platform-Windows-blue">
 </a>
+<a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/license-MIT-purple.svg" alt="MIT License"></a>
 
 This plugin supports cropping and rotating images for Android and iOS. It Allow inclusion of background, Rotation of image, changing ratio of selection as per  requirements.
 

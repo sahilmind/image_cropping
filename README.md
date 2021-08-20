@@ -1,5 +1,8 @@
 # image_cropping
 
+
+<a href="https://pub.dev/packages/image_cropping"><img src="https://img.shields.io/pub/v/image_cropping.svg" alt="Pub"></a>
+
 This plugin supports cropping and rotating images for Android and iOS. It Allow inclusion of background, Rotation of image, changing ratio of selection as per  requirements.
 
 

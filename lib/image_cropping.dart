@@ -29,7 +29,7 @@ class ImageCropping {
     /// Here, we are pushing a image cropping screen.
     Navigator.of(_context).push(
       MaterialPageRoute(
-        builder: (_context) => ImageCropppingScreen(
+        builder: (_context) => ImageCroppingScreen(
           _context,
           _imageBytes,
           _onImageStartLoading,
@@ -49,12 +49,12 @@ class ImageCropping {
   }
 }
 
-class ImageCropppingScreen extends StatefulWidget {
+class ImageCroppingScreen extends StatefulWidget {
   /// context is use to get height & width of screen and pop this screen.
   BuildContext _context;
 
   /// [_imageBytes] is use to draw image in device and if image not fits in device screen then we manage background color(if you have passed colorForWhiteSpace or else White background) in image cropping screen.
-  Uint8List _imageBytes;
+  late Uint8List _imageBytes;
 
   /// This property contains ImageRatio value. You can set the initialized a  spect ratio when starting the cropper by passing a value of ImageRatio. default value is `ImageRatio.FREE`
   ImageRatio selectedImageRatio = ImageRatio.FREE;
@@ -92,7 +92,7 @@ class ImageCropppingScreen extends StatefulWidget {
   /// This property contains Header menu icon size
   double headerMenuSize = 30;
 
-  ImageCropppingScreen(
+  ImageCroppingScreen(
       this._context,
       this._imageBytes,
       this._onImageStartLoading,
@@ -113,7 +113,7 @@ class ImageCropppingScreen extends StatefulWidget {
   _ImageCroppingScreenState createState() => _ImageCroppingScreenState();
 }
 
-class _ImageCroppingScreenState extends State<ImageCropppingScreen> {
+class _ImageCroppingScreenState extends State<ImageCroppingScreen> {
   double _leftTopDX = 0;
   double _leftTopDY = 0;
 
@@ -569,10 +569,12 @@ class _ImageCroppingScreenState extends State<ImageCropppingScreen> {
                 ),
               ),
             ),
+
             SizedBox(
               width: (kIsWeb) ? 50 : 0,
               height: (kIsWeb) ? 50 : 0,
             ),
+
           ],
         ),
       ),
